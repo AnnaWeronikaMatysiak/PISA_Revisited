@@ -17,8 +17,8 @@
 
 ### Contributors
 
-- Anna Weronika Matysiak ([GitHub](https://https://github.com/AnnaWeronikaMatysiak)
-- Johanna Mehler ([GitHub](https://https://github.com/j-mehler)
+- Anna Weronika Matysiak ([GitHub](https://https://github.com/AnnaWeronikaMatysiak))
+- Johanna Mehler ([GitHub](https://https://github.com/j-mehler))
 - Max Eckert ([GitHub](https://github.com/m-b-e), [twitter](https://twitter.com/mabrec1))
 
 
