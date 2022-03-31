@@ -12,7 +12,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
 #%% import tryout samples (later full train data?)
 
 PISA_sample_1000 = pd.read_csv("data/PISA_sample_1000.csv")
@@ -41,6 +40,16 @@ PISA_plot_sample.head()
 PISA_plot_sample.hist(bins=50, figsize=(20,15))
 plt.show()
 
+#renaming relevant columns
+PISA_raw.rename(columns = {'PV1READ':'read_score', 'ST004D01T':'female'}, inplace = True)
+
+#exploring our dependent variable
+PISA_raw.read_score.mean()
+PISA_raw[["read_score", "female"]].groupby("female").mean()
+
+PISA_raw.hist(column='read_score',bins=50)
+plt.axvline(x=456.1, color='red', linestyle='--')
+plt.show()
 
 #%% normalize features
 
