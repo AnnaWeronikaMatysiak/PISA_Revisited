@@ -28,6 +28,8 @@ import pandas as pd
 # read csv file
 PISA_raw = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_student_data.csv")
 
+# renaming relevant columns
+PISA_raw.rename(columns = {'PV1READ':'read_score', 'ST004D01T':'female'}, inplace = True)
 
 
 #%% split using scikit learn 
