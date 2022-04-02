@@ -13,6 +13,10 @@ import os
 os.getcwd()
 os.chdir('/Volumes/GoogleDrive/My Drive/PISA_Revisited/')
 
+# call setup file
+import runpy
+runpy.run_path(path_name = '/Volumes/GoogleDrive/My Drive/PISA_Revisited/0_setup.py')
+
 #%% import common packages
 
 import numpy as np
