@@ -8,6 +8,11 @@ Created on Thu Mar 31 15:14:00 2022
 from sklearn.linear_model import LinearRegression
 import pandas as pd
 
+# call setup file
+import runpy
+runpy.run_path(path_name = '/Volumes/GoogleDrive/My Drive/PISA_Revisited/0_setup.py')
+
+
 #%%
 PISA_sample_10=pd.read_csv("/My Drive/PISA_Revisited/data/PISA_sample_10.csv/")
 

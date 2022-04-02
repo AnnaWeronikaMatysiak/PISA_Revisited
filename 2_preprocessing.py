@@ -45,6 +45,7 @@ PISA_plot_sample.head()
 
 # plot only those
 PISA_plot_sample.hist(bins=50, figsize=(20,15))
+save_fig("distribution_examples")
 plt.show()
 
 # exploring the dependent variable "reading skills"
@@ -53,7 +54,9 @@ PISA_sample_1000[["read_score", "female"]].groupby("female").mean()
 
 PISA_sample_1000.hist(column='read_score',bins=50)
 plt.axvline(x=456.1, color='red', linestyle='--')
+save_fig("read_score")
 plt.show()
+
 
 
 
