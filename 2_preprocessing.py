@@ -58,20 +58,21 @@ plt.show()
 #%% Do something with NA's...
 
 
+
 #%% normalize all features and build a pipeline for preprocessing 
+
 # the numerical attributes (still check out what it does exactly)
 
-#from sklearn.pipeline import Pipeline
-#from sklearn.preprocessing import StandardScaler
+# from sklearn.pipeline import Pipeline
+# from sklearn.preprocessing import StandardScaler
 
-#num_pipeline = Pipeline([
+# num_pipeline = Pipeline([
         #('imputer', SimpleImputer(strategy="median")), # what's this?
         #('attribs_adder', CombinedAttributesAdder()), #  what's this?
         #('std_scaler', StandardScaler()),
     #])
 
-#data_transformed = num_pipeline.fit_transform("numerical_data")
-
+# data_transformed = num_pipeline.fit_transform("numerical_data")
 
 
 
