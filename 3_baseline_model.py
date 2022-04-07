@@ -4,6 +4,7 @@ Created on Thu Mar 31 15:14:00 2022
 
 @author: Anna
 """
+
 #%% import packages
 from sklearn.linear_model import LinearRegression
 import pandas as pd
@@ -15,11 +16,15 @@ import runpy
 runpy.run_path(path_name = '/Volumes/GoogleDrive/My Drive/PISA_Revisited/0_setup.py')
 PISA_sample_10=pd.read_csv("/My Drive/PISA_Revisited/data/PISA_sample_10.csv/")
 
+# imports sys, sklearn, numpy, os, matplotlib, pathlib
+# checks versions, sets wd, sets random.seed 42, specifies plots
+# defines function save_fig()
+
 #%% dependent and independent variables
 X=PISA_sample_10.loc[:, PISA_sample_10.columns.drop(['read_score'])]
 y = PISA_sample_10[["read_score"]]
 
-#%% version with normal equasion - add predictions
+#%% version with normal equation - add predictions
 X_b = np.c_[np.ones((100, 1)), X] 
 theta_best = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(y)
 

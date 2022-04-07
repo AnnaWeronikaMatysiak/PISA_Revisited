@@ -18,26 +18,26 @@ assert sklearn.__version__ >= "0.20"
 import numpy as np
 import os
 
+# set working directory
+os.getcwd()
+os.chdir('/Volumes/GoogleDrive/My Drive/PISA_Revisited/')
+
 # to make the output stable across runs
 np.random.seed(42)
 
-# To plot pretty figures
-# %matplotlib inline
+# To plot figures
+# %matplotlib inline         # what would this do?
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 mpl.rc('axes', labelsize=14)
 mpl.rc('xtick', labelsize=12)
 mpl.rc('ytick', labelsize=12)
 
-
-
 # Where to save the figures
-
 from pathlib import Path
 Path("/Volumes/GoogleDrive/My Drive/PISA_Revisited/figures").mkdir(parents=True, exist_ok=True)
 
 # still need to get it done that it actually uses the new folder!!
-
 
 # Where to save the figures
 PROJECT_ROOT_DIR = "." # JM: still need to change to our figures folder

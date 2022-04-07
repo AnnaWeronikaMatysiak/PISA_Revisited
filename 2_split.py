@@ -6,30 +6,23 @@ Created on Mon Mar 28 10:28:18 2022
 @author: Jo
 """
 
-#%% pre work
+#%% call setup file
 
-# set working directory
-import os
-os.getcwd()
-os.chdir('/Volumes/GoogleDrive/My Drive/PISA_Revisited/')
+import runpy
+runpy.run_path(path_name = '/Volumes/GoogleDrive/My Drive/PISA_Revisited/0_setup.py')
 
-# Python ≥3.5 is required
-import sys
-assert sys.version_info >= (3, 5)
+# imports sys, sklearn, numpy, os, matplotlib, pathlib
+# checks versions, sets wd, sets random.seed 42, specifies plots
+# defines function save_fig()
 
-# Scikit-Learn ≥0.20 is required
-import sklearn
-assert sklearn.__version__ >= "0.20"
+
+#%% import additional packages
 
 # load packages (common imports)
-import numpy as np
 import pandas as pd
 
 # read csv file
 PISA_raw = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_student_data.csv")
-
-# renaming relevant columns
-PISA_raw.rename(columns = {'PV1READ':'read_score', 'ST004D01T':'female'}, inplace = True)
 
 
 #%% split using scikit learn 
