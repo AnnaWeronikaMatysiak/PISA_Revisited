@@ -38,7 +38,14 @@ train_set, test_set = train_test_split(PISA_raw, test_size=0.2, random_state=42)
 len(train_set)
 len(test_set)
 
-# save train and test set
+#%% create validation sets taken from the train set
+
+# STILL TO DO
+#
+#
+
+#%% save train, validation and test sets
+
 train_set.to_csv("data/train_set.csv")
 test_set.to_csv("data/test_set.csv")
 
@@ -63,6 +70,13 @@ len(PISA_sample_10)
 PISA_sample_1000.to_csv("data/PISA_sample_1000.csv")
 PISA_sample_100.to_csv("data/PISA_sample_100.csv")
 PISA_sample_10.to_csv("data/PISA_sample_10.csv")
+
+
+#%% create subsets by gender (of which data?)
+
+# STILL TO DO
+#
+#
 
 
 
