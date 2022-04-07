@@ -9,7 +9,7 @@ Created on Mon Mar 28 10:28:18 2022
 #%% call setup file
 
 import runpy
-runpy.run_path(path_name = '/Volumes/GoogleDrive/My Drive/PISA_Revisited/0_setup.py')
+runpy.run_path(path_name = '/My Drive/PISA_Revisited/0_setup.py')
 
 # imports sys, sklearn, numpy, os, matplotlib, pathlib
 # checks versions, sets wd, sets random.seed 42, specifies plots
@@ -22,7 +22,7 @@ runpy.run_path(path_name = '/Volumes/GoogleDrive/My Drive/PISA_Revisited/0_setup
 import pandas as pd
 
 # read csv file
-PISA_raw = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_student_data.csv")
+PISA_raw = pd.read_csv("/My Drive/PISA_Revisited/data/PISA_student_data.csv")
 
 
 #%% split using scikit learn 

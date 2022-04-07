@@ -12,7 +12,7 @@ from sklearn.preprocessing import PolynomialFeatures
 
 #%% call setup file
 import runpy
-runpy.run_path(path_name = '/Volumes/GoogleDrive/My Drive/PISA_Revisited/0_setup.py')
+runpy.run_path(path_name = '/My Drive/PISA_Revisited/0_setup.py')
 PISA_sample_10=pd.read_csv("/My Drive/PISA_Revisited/data/PISA_sample_10.csv/")
 
 # imports sys, sklearn, numpy, os, matplotlib, pathlib
@@ -42,6 +42,7 @@ X[0]
 lin_reg = LinearRegression()
 lin_reg.fit(X_poly, y)
 lin_reg.intercept_, lin_reg.coef_
+lin_reg.predict_
 
 #%% plots
 

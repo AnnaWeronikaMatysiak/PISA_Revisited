@@ -20,7 +20,7 @@ import os
 
 # set working directory
 os.getcwd()
-os.chdir('/Volumes/GoogleDrive/My Drive/PISA_Revisited/')
+os.chdir('/My Drive/PISA_Revisited/')
 
 # to make the output stable across runs
 np.random.seed(42)
@@ -35,7 +35,7 @@ mpl.rc('ytick', labelsize=12)
 
 # Where to save the figures
 from pathlib import Path
-Path("/Volumes/GoogleDrive/My Drive/PISA_Revisited/figures").mkdir(parents=True, exist_ok=True)
+Path("/My Drive/PISA_Revisited/figures").mkdir(parents=True, exist_ok=True)
 
 # still need to get it done that it actually uses the new folder!!
 
