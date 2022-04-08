@@ -80,7 +80,7 @@ save_fig("read_score")
 plt.show()
 
 
-#%% Do something with NA's... -> or is this the 
+#%% NA observation
 
 PISA_sample_100 = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_sample_100.csv")
 
@@ -112,6 +112,7 @@ for Index in NaN_count:
 # --->>> check the variables that fulfill this criteria
 
 
+#%% imputing for NaN's
 
 # works only with numerical data
 from sklearn.impute import SimpleImputer
