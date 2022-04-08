@@ -51,29 +51,31 @@ PISA_sample_100 = PISA_sample_100.columns.drop(["VER_DAT", "CNT"])
 X=PISA_sample_100.loc[:, PISA_sample_100.columns.drop(['read_score'])]
 y = PISA_sample_100[["read_score"]]
 
-
-
-
 #%% linear regression
 lin_reg= LinearRegression()
 lin_reg.fit(X, y)   
 
 lin_reg.coef_
 lin_reg.intercept_
-lin_reg.predict_
+lin_reg.predict(X)
 
-#%% RMS
+#%% RMSE
 
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error
+
+mse = mean_squared_error(y_true, y_predicted, squared=False)
+rmse= np.sqrt(metrics.mean_squared_error(y_true, y_predicted)
 
 #%% polynomial regression
 poly_features = PolynomialFeatures(degree=2, include_bias=False)
 X_poly = poly_features.fit_transform(X)
 X[0]
 
-lin_reg = LinearRegression()
-lin_reg.fit(X_poly, y)
-lin_reg.intercept_, lin_reg.coef_
-lin_reg.predict_
+lin_reg_pol = LinearRegression()
+lin_reg_pol.fit(X_poly, y)
+lin_reg_pol.intercept_, lin_reg.coef_
+lin_reg_pol.predict(X)
 
 #%% cost funtions
 
