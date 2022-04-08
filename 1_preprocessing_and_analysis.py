@@ -87,8 +87,31 @@ PISA_sample_100 = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data
 medians = PISA_sample_100.median()
 print(medians)
 
-
 PISA_sample_100 = PISA_sample_100.drop(columns = ["VER_DAT", "CNT", "CYC", "STRATUM"])
+
+# from the codebook:
+# "VER_DAT" is only a date
+# "CNT" is only a country code that is also represented in the country ID
+# "CYC" is "PISA Assessment Cycle (2 digits + 2 character Assessment type - MS/FT)"
+# "STRATUM" is "Stratum ID 7-character (cnt + region ID + original stratum ID)"
+# -> can all be dropped
+
+# detect missing values in the given object, returning a boolean same-sized 
+# object indicating if the values are NA. Missing values gets mapped to 
+# True and non-missing value gets mapped to False.
+PISA_sample_100.isnull()
+
+# sum up how many values are NaN's
+NaN_count = PISA_sample_100.isnull().sum()
+
+# show every variable that has over [...] NaN values:
+for Index in NaN_count:
+# if the value for the variable 0 is greater than [...] 
+# print(Index)
+
+# --->>> check the variables that fulfill this criteria
+
+
 
 # works only with numerical data
 from sklearn.impute import SimpleImputer
