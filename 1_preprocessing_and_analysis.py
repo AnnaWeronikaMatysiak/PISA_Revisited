@@ -80,13 +80,31 @@ save_fig("read_score")
 plt.show()
 
 
-#%% Data Types
-
-
-
 #%% Do something with NA's... -> or is this the 
 
-# find how many NA's in each row, develop a strategy to deal with them
+PISA_sample_100 = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_sample_100.csv")
+
+medians = PISA_sample_100.median()
+print(medians)
+
+
+PISA_sample_100 = PISA_sample_100.drop(columns = ["VER_DAT", "CNT", "CYC", "STRATUM"])
+
+# works only with numerical data
+from sklearn.impute import SimpleImputer
+imputer = SimpleImputer(strategy = "median")
+imputer.fit(PISA_sample_100)
+
+imputer.statistics_
+PISA_sample_100.median().values
+
+X = imputer.transform(PISA_sample_100)
+
+# This doesn't work yet but I don't know why
+# PISA_sample_transformed = pd.DataFrame(X, columns = PISA_sample_100.comlumns, index = PISA_sample_100.index)
+
+#%% Data Types
+
 
 
 
