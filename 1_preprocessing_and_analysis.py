@@ -22,7 +22,6 @@ import pandas as pd
 #%% read in data
 
 # read csv file
-PISA_raw = pd.read_csv("/My Drive/PISA_Revisited/data/PISA_student_data.csv")
 
 # renaming relevant columns
 PISA_raw.rename(columns = {'PV1READ':'read_score', 'ST004D01T':'female'}, inplace = True)
@@ -103,6 +102,20 @@ PISA_sample_100.isnull()
 
 # sum up how many values are NaN's
 NaN_count = PISA_sample_100.isnull().sum()
+#relative frequency
+NaN_count_rel = PISA_sample_100.isnull().sum()/len(PISA_sample_100)*100
+#descending order
+NaN_count_rel.sort_values(ascending=False)
+NaN_count_rel.columns=['Variable', 'Missingness']
+
+#Save as csv to export and use side by side with codebook
+NaN_count_rel.to_csv('NA_Values.csv') 
+
+#Same steps for whole dataset
+Total_NaN_count_rel = PISA_raw.isnull().sum()/len(PISA_raw)*100
+Total_NaN_count_rel.sort_values(ascending=False)
+Total_NaN_count_rel.columns=['Variable', 'Missingness']
+Total_NaN_count_rel.to_csv('Total_NA_Values.csv') 
 
 # show every variable that has over [...] NaN values:
 for Index in NaN_count:
