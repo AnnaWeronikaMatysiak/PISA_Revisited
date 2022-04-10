@@ -27,6 +27,12 @@ PISA_raw = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_s
 # renaming relevant columns
 PISA_raw.rename(columns = {'PV1READ':'read_score', 'ST004D01T':'female'}, inplace = True)
 
+# save as csv
+PISA_raw.to_csv("data/PISA_raw")
+
+# read in after first run - already renamed
+PISA_raw = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_raw")
+
 
 #%% create tryout samples (created as split of raw data)
 
@@ -80,17 +86,30 @@ save_fig("read_score")
 plt.show()
 
 
-#%% NA observation
+#%% handle students without reading score (for now drop them)
 
 PISA_raw_100 = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_sample_100.csv")
 
 medians = PISA_raw_100.median()
 print(medians)
 
+# see missingness of reading score (read_score) -> 0.8%
+print(Total_NaN_count_rel[Total_NaN_count_rel["variable"] == "PV9READ"])
+
+# look at observations that don't have read_score (still to do)
+# students_without_reading_score = PISA_raw[....]
+
+# drop students with NaN in reading score. inplace replaces the old data frame with the smaller, new one
+PISA_raw = PISA_raw.dropna(subset=['read_score'], inplace=True)
+
+
+#%% handle string columns
+
 # drop string variables
-PISA_raw_100 = PISA_raw_100.drop(columns = ["VER_DAT", "CNT", "CYC", "STRATUM"])
-# for the whole dataset:
-PISA_raw = PISA_raw_100.drop(columns = ["VER_DAT", "CNT", "CYC", "STRATUM"])
+# PISA_raw_100 = PISA_raw_100.drop(columns = ["VER_DAT", "CNT", "CYC", "STRATUM"])
+
+# drop string variables for the whole dataset:
+PISA_raw = PISA_raw.drop(columns = ["VER_DAT", "CNT", "CYC", "STRATUM"])
 
 # from the codebook:
 # "VER_DAT" is only a date
@@ -98,6 +117,8 @@ PISA_raw = PISA_raw_100.drop(columns = ["VER_DAT", "CNT", "CYC", "STRATUM"])
 # "CYC" is "PISA Assessment Cycle (2 digits + 2 character Assessment type - MS/FT)"
 # "STRATUM" is "Stratum ID 7-character (cnt + region ID + original stratum ID)"
 # -> can all be dropped
+
+#%% handle NAN's in other columns
 
 # detect missing values in the given object, returning a boolean same-sized 
 # object indicating if the values are NA. Missing values gets mapped to 
@@ -110,23 +131,38 @@ NaN_count = PISA_raw_100.isnull().sum()
 NaN_count_rel = PISA_raw_100.isnull().sum()/len(PISA_raw_100)*100
 # descending order
 NaN_count_rel.sort_values(ascending=False)
-NaN_count_rel.columns = ['Variable', 'Missingness']
 
 # Save as csv to export and use side by side with codebook
 NaN_count_rel.to_csv('data/NA_Values.csv') 
 
-#Same steps for whole dataset
+# Same steps for whole dataset
 Total_NaN_count_rel = PISA_raw.isnull().sum()/len(PISA_raw)*100
-Total_NaN_count_rel.sort_values(ascending=False)
-Total_NaN_count_rel.columns = ['Variable', 'Missingness']
+Total_NaN_count_rel = Total_NaN_count_rel.sort_values(ascending=False)
+
+# create data frame with variable and missingness
+Total_NaN_count_rel = Total_NaN_count_rel.reset_index(level=0)
+Total_NaN_count_rel = pd.DataFrame(Total_NaN_count_rel)
+Total_NaN_count_rel.columns = ['variable', 'missingness']
+
 Total_NaN_count_rel.to_csv('data/Total_NA_Values.csv') 
 
-# show every variable that has over [...] NaN values:
-for Index in NaN_count:
-# if the value for the variable 0 is greater than [...] 
-# print(Index)
 
-# --->>> check the variables that fulfill this criteria
+#drop columns that have more than 75% NAN's
+
+# see which variables have over 75% missingness
+observations_to_drop = Total_NaN_count_rel[Total_NaN_count_rel["missingness"] > 75]
+# create an array with the variable names with missingness over 75%
+observation_names_to_drop = observations_to_drop["variable"]
+len(observation_names_to_drop)
+print(observation_names_to_drop)
+# convert to array
+observation_names_to_drop.array
+
+# drop columns with more than 75% missingness
+PISA_raw = PISA_raw.drop(columns = [observation_names_to_drop])
+
+PISA_raw = PISA_raw.drop([observation_names_to_drop], axis=1)
+
 
 
 #%% imputing for NaN's
