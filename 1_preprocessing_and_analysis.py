@@ -22,6 +22,7 @@ import pandas as pd
 #%% read in data
 
 # read csv file
+PISA_raw = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_student_data.csv")
 
 # renaming relevant columns
 PISA_raw.rename(columns = {'PV1READ':'read_score', 'ST004D01T':'female'}, inplace = True)
@@ -81,12 +82,15 @@ plt.show()
 
 #%% NA observation
 
-PISA_sample_100 = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_sample_100.csv")
+PISA_raw_100 = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_sample_100.csv")
 
-medians = PISA_sample_100.median()
+medians = PISA_raw_100.median()
 print(medians)
 
-PISA_sample_100 = PISA_sample_100.drop(columns = ["VER_DAT", "CNT", "CYC", "STRATUM"])
+# drop string variables
+PISA_raw_100 = PISA_raw_100.drop(columns = ["VER_DAT", "CNT", "CYC", "STRATUM"])
+# for the whole dataset:
+PISA_raw = PISA_raw_100.drop(columns = ["VER_DAT", "CNT", "CYC", "STRATUM"])
 
 # from the codebook:
 # "VER_DAT" is only a date
@@ -98,24 +102,24 @@ PISA_sample_100 = PISA_sample_100.drop(columns = ["VER_DAT", "CNT", "CYC", "STRA
 # detect missing values in the given object, returning a boolean same-sized 
 # object indicating if the values are NA. Missing values gets mapped to 
 # True and non-missing value gets mapped to False.
-PISA_sample_100.isnull()
+PISA_raw_100.isnull()
 
 # sum up how many values are NaN's
-NaN_count = PISA_sample_100.isnull().sum()
-#relative frequency
-NaN_count_rel = PISA_sample_100.isnull().sum()/len(PISA_sample_100)*100
-#descending order
+NaN_count = PISA_raw_100.isnull().sum()
+# relative frequency
+NaN_count_rel = PISA_raw_100.isnull().sum()/len(PISA_raw_100)*100
+# descending order
 NaN_count_rel.sort_values(ascending=False)
-NaN_count_rel.columns=['Variable', 'Missingness']
+NaN_count_rel.columns = ['Variable', 'Missingness']
 
-#Save as csv to export and use side by side with codebook
-NaN_count_rel.to_csv('NA_Values.csv') 
+# Save as csv to export and use side by side with codebook
+NaN_count_rel.to_csv('data/NA_Values.csv') 
 
 #Same steps for whole dataset
 Total_NaN_count_rel = PISA_raw.isnull().sum()/len(PISA_raw)*100
 Total_NaN_count_rel.sort_values(ascending=False)
-Total_NaN_count_rel.columns=['Variable', 'Missingness']
-Total_NaN_count_rel.to_csv('Total_NA_Values.csv') 
+Total_NaN_count_rel.columns = ['Variable', 'Missingness']
+Total_NaN_count_rel.to_csv('data/Total_NA_Values.csv') 
 
 # show every variable that has over [...] NaN values:
 for Index in NaN_count:
