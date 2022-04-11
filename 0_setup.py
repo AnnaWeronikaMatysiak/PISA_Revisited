@@ -34,7 +34,7 @@ mpl.rc('ytick', labelsize=12)
 
 # Where to save the figures
 from pathlib import Path
-Path("/My Drive/PISA_Revisited/figures").mkdir(parents=True, exist_ok=True)
+Path("figures").mkdir(parents=True, exist_ok=True)
 
 # still need to get it done that it actually uses the new folder!!
 
