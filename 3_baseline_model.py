@@ -28,14 +28,10 @@ from sklearn.linear_model import Ridge
 #%% call setup file
 #import runpy
 #runpy.run_path(path_name = '/My Drive/PISA_Revisited/0_setup.py')
-PISA_sample_100 = pd.read_csv("/My Drive/PISA_Revisited/data/PISA_sample_100.csv")
-PISA_sample_100 = PISA_sample_100.drop(columns=["VER_DAT", "CNT", "CYC", "STRATUM"])
-
 
 #%%
 PISA_sample_100 = pd.read_csv("/My Drive/PISA_Revisited/data/PISA_sample_100.csv")
-#utill we drop these variables from the whole data set,
-# I manualy exclude them from sample
+#utill we drop these variables from the whole data set, I manualy exclude them from sample
 PISA_sample_100 = PISA_sample_100.drop(columns=["VER_DAT", "CNT", "CYC", "STRATUM"])
 
 X_train=PISA_sample_100.drop(columns=["read_score"])
@@ -45,7 +41,7 @@ y_train=PISA_sample_100["read_score"]
 y_train=y_train.to_frame()
 
 
-#for test untill we have clean data I replace the data columns
+#for current tests untill we have clean data I replaced the data columns
 # with NAs witht the colum means. This does not work for "test" column, so I drop it. 
 #By the way, what is that column about?
 y_train=y_train.apply(lambda x: x.fillna(x.mean()))
