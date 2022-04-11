@@ -26,7 +26,6 @@ os.chdir('/Volumes/GoogleDrive/My Drive/PISA_Revisited/')
 np.random.seed(42)
 
 # To plot figures
-# %matplotlib inline         # what would this do?
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 mpl.rc('axes', labelsize=14)

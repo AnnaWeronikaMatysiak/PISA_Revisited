@@ -24,14 +24,14 @@ import pandas as pd
 # read csv file
 PISA_raw = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_student_data.csv")
 
-# renaming relevant columns
+# renaming relevant columns (somehow was NOT APPLIED YET, no idea why -> check)
 PISA_raw.rename(columns = {'PV1READ':'read_score', 'ST004D01T':'female'}, inplace = True)
 
-# save as csv
-PISA_raw.to_csv("data/PISA_raw")
+# save as csv with renamed columns
+# PISA_raw.to_csv("data/PISA_raw")
 
 # read in after first run - already renamed
-PISA_raw = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_raw")
+# PISA_raw = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_raw")
 
 
 #%% create tryout samples (created as split of raw data)
@@ -63,15 +63,11 @@ PISA_raw_10.info()
 # generate description of variables
 PISA_raw_10.describe()
 
-# plot variables (not really possible with our over 1000 variables...)
-# PISA_sample_100.hist(bins=50, figsize=(20,15))
-# plt.show()
-
-# --> plot variables: select random features
+# plot variables: select random features due to a high amount of variables
 PISA_plot_sample = PISA_raw_100.sample(n=10,axis='columns')
 PISA_plot_sample.head()
 
-# plot only those
+# plot the random features
 PISA_plot_sample.hist(bins=50, figsize=(20,15))
 save_fig("distribution_examples")
 plt.show()
@@ -84,23 +80,6 @@ PISA_raw_1000.hist(column='read_score',bins=50)
 plt.axvline(x=456.1, color='red', linestyle='--')
 save_fig("read_score")
 plt.show()
-
-
-#%% handle students without reading score (for now drop them)
-
-PISA_raw_100 = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_sample_100.csv")
-
-medians = PISA_raw_100.median()
-print(medians)
-
-# see missingness of reading score (read_score) -> 0.8%
-print(Total_NaN_count_rel[Total_NaN_count_rel["variable"] == "PV9READ"])
-
-# look at observations that don't have read_score (still to do)
-# students_without_reading_score = PISA_raw[....]
-
-# drop students with NaN in reading score. inplace replaces the old data frame with the smaller, new one
-PISA_raw = PISA_raw.dropna(subset=['read_score'], inplace=True)
 
 
 #%% handle string columns
@@ -118,7 +97,8 @@ PISA_raw = PISA_raw.drop(columns = ["VER_DAT", "CNT", "CYC", "STRATUM"])
 # "STRATUM" is "Stratum ID 7-character (cnt + region ID + original stratum ID)"
 # -> can all be dropped
 
-#%% handle NAN's in other columns
+
+#%% handle NAN's in all columns
 
 # detect missing values in the given object, returning a boolean same-sized 
 # object indicating if the values are NA. Missing values gets mapped to 
@@ -143,11 +123,11 @@ Total_NaN_count_rel = Total_NaN_count_rel.sort_values(ascending=False)
 Total_NaN_count_rel = Total_NaN_count_rel.reset_index(level=0)
 Total_NaN_count_rel = pd.DataFrame(Total_NaN_count_rel)
 Total_NaN_count_rel.columns = ['variable', 'missingness']
-
+# save missingness information as csv
 Total_NaN_count_rel.to_csv('data/Total_NA_Values.csv') 
 
 
-#drop columns that have more than 75% NAN's
+# drop columns that have more than 75% NAN's
 
 # see which variables have over 75% missingness
 observations_to_drop = Total_NaN_count_rel[Total_NaN_count_rel["missingness"] > 75]
@@ -155,17 +135,44 @@ observations_to_drop = Total_NaN_count_rel[Total_NaN_count_rel["missingness"] > 
 observation_names_to_drop = observations_to_drop["variable"]
 len(observation_names_to_drop)
 print(observation_names_to_drop)
-# convert to array
-observation_names_to_drop.array
+# convert to list
+observation_names_to_drop = observation_names_to_drop.values.tolist()
 
 # drop columns with more than 75% missingness
-PISA_raw = PISA_raw.drop(columns = [observation_names_to_drop])
-
-PISA_raw = PISA_raw.drop([observation_names_to_drop], axis=1)
+PISA_less_columns = PISA_raw.drop(columns = observation_names_to_drop, axis = 1)
 
 
+#%% handle students without reading score (for now drop them)
+
+PISA_raw_100 = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_sample_100.csv")
+
+medians = PISA_raw_100.median()
+print(medians)
+
+# see missingness of reading score (read_score) -> 0.8%
+print(Total_NaN_count_rel[Total_NaN_count_rel["variable"] == "PV9READ"])
+
+# look at observations that don't have read_score (still to do)
+# students_without_reading_score = PISA_raw[....]
+
+# drop students with NaN in reading score. inplace replaces the old data frame with the smaller, new one
+# with replacement: PISA_raw = PISA_raw.dropna(subset=['read_score'], inplace=True)
+PISA_reduced = PISA_less_columns.dropna(subset=['PV9READ'])
+
+# save reduced version as an update (not enough disk space yet)
+# PISA_reduced.to_csv("data/PISA_reduced")
+
+# take a sample for first try out of further operations
+PISA_reduced_sample = PISA_reduced.sample(10)
 
 #%% imputing for NaN's
+
+# One type of imputation algorithm is univariate, which imputes values in the i-th feature dimension 
+# using only non-missing values in that feature dimension (e.g. impute.SimpleImputer). By contrast, 
+# multivariate imputation algorithms use the entire set of available feature dimensions to estimate 
+# the missing values (e.g. impute.IterativeImputer).
+
+# for now, to save runtime, we will use the simple imputer
 
 # works only with numerical data
 from sklearn.impute import SimpleImputer
@@ -180,10 +187,11 @@ X = imputer.transform(PISA_sample_100)
 # This doesn't work yet but I don't know why
 # PISA_sample_transformed = pd.DataFrame(X, columns = PISA_sample_100.comlumns, index = PISA_sample_100.index)
 
-#%% Data Types
 
 
-
+# itearative imputation (k nearest neighbor or random forest - where is linear?) check out these links
+# https://scikit-learn.org/stable/modules/impute.html
+# https://scikit-learn.org/stable/auto_examples/impute/plot_missing_values.html#sphx-glr-auto-examples-impute-plot-missing-values-py
 
 #%% any other preprocessing (pattern missingness? etc.)
 

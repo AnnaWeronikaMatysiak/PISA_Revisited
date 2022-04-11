@@ -22,7 +22,7 @@ runpy.run_path(path_name = '/My Drive/PISA_Revisited/0_setup.py')
 import pandas as pd
 
 # read csv file
-PISA_raw = pd.read_csv("/My Drive/PISA_Revisited/data/PISA_student_data.csv")
+PISA_raw = pd.read_csv("/My Drive/PISA_Revisited/data/PISA_raw.csv")
 
 
 #%% split using scikit learn 
@@ -42,7 +42,7 @@ len(test_set)
 
 # STILL TO DO
 #
-#
+# due to a very big data set, we can take observations from our test set for validation
 
 #%% save train, validation and test sets
 
