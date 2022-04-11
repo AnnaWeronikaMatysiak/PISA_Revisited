@@ -9,6 +9,14 @@ Created on Mon Apr 11 16:56:52 2022
 
 
 
+# Compare the effect of different scalers on data with outliers
+# https://scikit-learn.org/stable/auto_examples/preprocessing/plot_all_scaling.html#sphx-glr-auto-examples-preprocessing-plot-all-scaling-py
+
+
+
+
+
+
 #%% normalize all features 
 
 # the numerical attributes (still check out what it does exactly)
