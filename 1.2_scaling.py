@@ -6,7 +6,14 @@ Created on Mon Apr 11 16:56:52 2022
 @author: Jo
 """
 
+"""
 
+To Do's
+- follow instructions below
+
+Endproduct should be a dataframe saved to csv without NA's and with normalized values
+
+"""
 
 
 # Compare the effect of different scalers on data with outliers
