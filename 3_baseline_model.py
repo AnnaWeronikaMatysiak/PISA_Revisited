@@ -7,22 +7,22 @@ Created on Thu Mar 31 15:14:00 2022
 
 """
 TO DO:
-- check the evaluation metrics, 
-- check if that's what Eric recommended 
+- add the validation sets and test models on them
 - add plots
-- find out at which point we need to use test and when shall we compare between the models
-- are we able/allowed to compare them now already?
+- add models with changes parameters like alpha, degree of polymomials etc. 
 - at the end, change PISA_sample_100 to the final sample we are using'
+- check the metrics for each model
+- check aplication for polynomial regression if ours is correct
 """
 
 #%% import packages
 from sklearn.linear_model import LinearRegression
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import PolynomialFeatures
-import matplotlib.pyplot as plt
+#from sklearn.preprocessing import PolynomialFeatures
+#import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
-from sklearn.metrics import mean_absolute_error
+
 from sklearn.linear_model import Ridge
 
 #%% call setup file
@@ -51,65 +51,63 @@ X_train=X_train.drop(columns=["test"])
 #code to check if any of the columns have NAs:
 #y_train.isnull().any()
 
+# repeat that for validation sets
+y_validation=...
+X_validation=...
+
 #%% linear regression
 lin_reg= LinearRegression()
 lin_reg.fit(X_train, y_train)   
 
 lin_reg.coef_
 lin_reg.intercept_
-predicted=lin_reg.predict(X_train)
-predicted.heac()
+
+y_predicted=lin_reg.predict(X_validation)
+y_predicted.head()
 
 #%% evaluation 
-"""questions to Eric 
-- are we supposed to calculate it now (at this stage) on train or test tests?
-- why our mse and rmse are the same?"""
-mse = mean_squared_error(y_train, predicted, squared=False)
-rmse= np.sqrt(mean_squared_error(y_train, predicted))
-mae=mean_absolute_error(y_train, predicted)
-
+mse = mean_squared_error(y_validation, y_predicted)
+rmse= np.sqrt(mean_squared_error(y_validation, y_predicted))
 print(mse)
 print(rmse)
-print(mae)
 
 #%%plots
-plt.plot(X_train, predicted, color="blue", linewidth=3)
+#plt.plot(X_train, y_predicted, color="blue", linewidth=3)
 
-#%% polynomial regression
+#%% ridge regression
+ridge_reg = Ridge(alpha=1, solver="cholesky")
+ridge_reg.fit(X_train, y_train)
+predicted_ridge=ridge_reg.predict(X_validation)
 
-poly_features = PolynomialFeatures(degree=2, include_bias=False)
+#%% evaluation 
+
+mse_ridge = mean_squared_error(y_validation, predicted_ridge)
+rmse_ridge= np.sqrt(mean_squared_error(y_validation, predicted_ridge))
+
+print(mse_ridge)
+print(rmse_ridge)
+
+#%% polynomial regression - NOT READY, LEARNING ABOUT IT NOW, 
+#is this appropirate for the data we have already to we 
+#have to apply poly measures to train and test?
+
+"""poly_features = PolynomialFeatures(degree=2, include_bias=False)
 X_poly = poly_features.fit_transform(X_train)
 X_train[0]
 
 lin_reg_pol = LinearRegression()
 lin_reg_pol.fit(X_poly, y_train)
 lin_reg_pol.intercept_, lin_reg.coef_
-predicted_poly=lin_reg_pol.predict(X_poly)
-predicted_poly.head()
+y_predicted_poly=lin_reg_pol.predict(#X_poly or X_evaluation) #check
+y_predicted_poly.head()"""
 
-#%% evaluation
-#ask Eric as above
-mse_poly = mean_squared_error(y_train, predicted_poly, squared=False)
-rmse_poly= np.sqrt(mean_squared_error(y_train, predicted_poly))
-mae_poly=mean_absolute_error(y_train, predicted_poly)
+#%% evaluation 
+"""mse_poly = mean_squared_error(y_validation, y_predicted_poly)
+rmse_poly= np.sqrt(mean_squared_error(y_validation, y_predicted_poly))
+mae_poly=mean_absolute_error(y_validation, y_predicted_poly)
 
 print(mse_poly)
 print(rmse_poly)
-print(mae_poly)
+print(mae_poly)"""
 
-#%% ridge regression
-ridge_reg = Ridge(alpha=1, solver="cholesky")
-ridge_reg.fit(X_train, y_train)
-predicted_ridge=ridge_reg.predict(X_train)
-
-#%% evaluation 
-#ask Eric - do we need more or only these measures
-
-mse_ridge = mean_squared_error(y_train, predicted_ridge, squared=False)
-rmse_ridge= np.sqrt(mean_squared_error(y_train, predicted_ridge))
-mae_ridge=mean_absolute_error(y_train, predicted_ridge)
-
-print(mse_ridge)
-print(rmse_ridge)
-print(mae_ridge)
 
