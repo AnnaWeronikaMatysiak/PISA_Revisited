@@ -43,6 +43,84 @@ import numpy as np
 # for now, to save runtime, we will use a small sample (10 observations) created in file 1
 PISA_reduced_sample = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_reduced_sample.csv")
 
+# create bigger reduced sample
+PISA_raw_1000 = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_raw_1000.csv")
+rename_read_score_female(PISA_raw_1000)
+remove_string_columns(PISA_raw_1000)
+PISA_1000 = drop_columns_with_missingness(PISA_raw_1000, 5)
+
+
+
+#%% MissForest simple try
+
+# description: https://towardsdatascience.com/missforest-the-best-missing-data-imputation-algorithm-4d01182aed3
+# and official page: https://pypi.org/project/missingpy/
+
+# type "pip install missingpy" in the console for installation
+from missingpy import MissForest
+
+X = PISA_reduced_sample
+
+imputer = MissForest()
+X_imputed = imputer.fit_transform(X)
+
+# missing: 
+    # - specified categorical variables
+    # - restrictions on interations (to reduce runtime)
+    
+#%% MissForest more advanced, indicating factor variables and restricting the algorithm
+
+# documentation https://pypi.org/project/missingpy/
+
+# max_iter: default= 10. The maximum of iterations.
+# n_estimators : integer, optional (default=100). The number of trees in the forest.
+# max_features : The number of features to consider when looking for the best split
+# n_jobs : int or None, optional (default=None) The number of jobs to run in parallel 
+        # for both `fit` and `predict`. ``None`` means 1 
+        # ``-1`` means using all processors. 
+
+# -> proposed parameters for our bigger sample:
+    # max_iter = 5, n_estimators = 50, max_features = 100, 
+    # n_jobs = -1, random_state = 42
+
+# in order to use the fit the imputer, we need to use the fit() function indicating
+# all categorical variables. 
+
+# Create an array of integers with our categorical variables
+# in order to do so, we decrease the number of variables for now. 
+# code from file 1, function taking a dataframe and the percentage 
+# of missingness with which columns should be dropped (here everything over 5%)
+PISA_reduced_2 = drop_columns_with_missingness(PISA_reduced_sample, 5)
+
+
+fit(self, X, y=None, cat_vars=None):
+    Fit the imputer on X.
+
+    Parameters
+    ----------
+    X : {array-like}, shape (n_samples, n_features)
+        Input data, where ``n_samples`` is the number of samples and
+        ``n_features`` is the number of features.
+
+    cat_vars : int or array of ints, optional (default = None)
+        An int or an array containing column indices of categorical
+        variable(s)/feature(s) present in the dataset X.
+        ``None`` if there are no categorical variables in the dataset.
+
+    Returns
+    -------
+    self : object
+        Returns self.
+
+
+
+# statistics_ : Dictionary of length two
+    # The first element is an array with the mean of each numerical feature
+    # being imputed while the second element is an array of modes of
+    # categorical features being imputed (if available, otherwise it
+    # will be None).
+
+
 #%% compare different iterative imputation methods
 
 import numpy as np

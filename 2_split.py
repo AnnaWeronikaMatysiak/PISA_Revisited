@@ -9,7 +9,7 @@ Created on Mon Mar 28 10:28:18 2022
 """
 
 To Do's
-- run again if preprocessed completely (imputing and scaling of the whole dataset 
+- run again when preprocessed completely (imputing and scaling of the whole dataset 
                                         is still missing)
 
 
