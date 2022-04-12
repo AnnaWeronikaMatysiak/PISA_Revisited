@@ -19,11 +19,12 @@ TO DO:
 from sklearn.linear_model import LinearRegression
 import pandas as pd
 import numpy as np
-#from sklearn.preprocessing import PolynomialFeatures
+from sklearn.preprocessing import PolynomialFeatures
 #import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
-
-from sklearn.linear_model import Ridge
+#from sklearn.linear_model import Ridge
+from sklearn.linear_model import RidgeCV
+from sklearn.metrics import r2_score
 
 #%% call setup file
 #import runpy
@@ -75,9 +76,16 @@ print(rmse)
 #plt.plot(X_train, y_predicted, color="blue", linewidth=3)
 
 #%% ridge regression
-ridge_reg = Ridge(alpha=1, solver="cholesky")
-ridge_reg.fit(X_train, y_train)
+#from sklearn.preprocessing import StandardScaler
+#scaler = StandardScaler()
+#X_std = scaler.fit_transform(X_train)
+
+ridge_reg = RidgeCV(alphas=[1e-3, 1e-2, 1e-1, 1, 10], normalize=True)
+ridge_reg_model=ridge_reg.fit(X_train, y_train)
 predicted_ridge=ridge_reg.predict(X_validation)
+
+#to check which alpha was used
+ridge_reg_model.alpha_
 
 #%% evaluation 
 
@@ -87,27 +95,38 @@ rmse_ridge= np.sqrt(mean_squared_error(y_validation, predicted_ridge))
 print(mse_ridge)
 print(rmse_ridge)
 
-#%% polynomial regression - NOT READY, LEARNING ABOUT IT NOW, 
-#is this appropirate for the data we have already to we 
-#have to apply poly measures to train and test?
+#%% plots
 
-"""poly_features = PolynomialFeatures(degree=2, include_bias=False)
+#%% polynomial regressions 
+
+poly_features = PolynomialFeatures(degree=2, include_bias=False)
 X_poly = poly_features.fit_transform(X_train)
-X_train[0]
 
 lin_reg_pol = LinearRegression()
 lin_reg_pol.fit(X_poly, y_train)
-lin_reg_pol.intercept_, lin_reg.coef_
-y_predicted_poly=lin_reg_pol.predict(#X_poly or X_evaluation) #check
-y_predicted_poly.head()"""
+lin_reg_pol.intercept_, lin_reg_pol.coef_
+y_predicted_poly=lin_reg_pol.predict(X_validation) 
+y_predicted_poly.head()
+
+
+poly_features_3 = PolynomialFeatures(degree=3, include_bias=False)
+X_poly = poly_features_3.fit_transform(X_train)
+
+lin_reg_pol_3 = LinearRegression()
+lin_reg_pol_3.fit(X_poly, y_train)
+lin_reg_pol_3.intercept_, lin_reg_pol_3.coef_
+y_predicted_poly_3=lin_reg_pol.predict(X_validation) 
+y_predicted_poly_3.head()
 
 #%% evaluation 
-"""mse_poly = mean_squared_error(y_validation, y_predicted_poly)
+mse_poly = mean_squared_error(y_validation, y_predicted_poly)
 rmse_poly= np.sqrt(mean_squared_error(y_validation, y_predicted_poly))
-mae_poly=mean_absolute_error(y_validation, y_predicted_poly)
 
+r2_poly=r2_score(y_validation, y_predicted_poly)
+r2_poly_3= r2_score(y_validation, y_predicted_poly_3)
+
+print(r2_poly)
+print(r2_poly_3)
 print(mse_poly)
 print(rmse_poly)
-print(mae_poly)"""
-
 
