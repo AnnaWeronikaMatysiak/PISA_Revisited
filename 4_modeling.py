@@ -27,9 +27,14 @@ PISA_sample_1000 = pd.read_csv("data/PISA_sample_1000.csv")
 
 #%% define dependent and independent variables
 
-X_sample = PISA_sample_10.loc[:, PISA_sample_10.columns.drop(['read_score'])]
-y_sample = PISA_sample_10[["read_score"]]
+X_sample=PISA_sample_10.drop(columns=["read_score"])
+y_sample=PISA_sample_10["read_score"]
 
+#becuase y is an array, I change it back to data frame
+y_sample=y_sample.to_frame()
+
+#code to check if any of the columns still have NAs:
+#y_train.isnull().any()
 
 #%% Random Forest Regressor
 

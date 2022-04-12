@@ -11,8 +11,6 @@ TO DO:
 - add plots
 - add models with changes parameters like alpha, degree of polymomials etc. 
 - at the end, change PISA_sample_100 to the final sample we are using'
-- check the metrics for each model
-- check aplication for polynomial regression if ours is correct
 """
 
 #%% import packages
@@ -129,4 +127,17 @@ print(r2_poly)
 print(r2_poly_3)
 print(mse_poly)
 print(rmse_poly)
+
+#%% Linear SVM base line 
+from sklearn.pipeline import Pipeline 
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import LinearSVC
+
+
+polynomial_svm_clf = Pipeline([("poly_features", PolynomialFeatures(degree=3)),
+                               ("scaler", StandardScaler()),("svm_clf", 
+                                LinearSVC(C=10, loss="hinge")) ])
+polynomial_svm_clf.fit(X_train, y_train)
+
+
 
