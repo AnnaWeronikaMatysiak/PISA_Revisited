@@ -43,15 +43,8 @@ import numpy as np
 # for now, to save runtime, we will use a small sample (10 observations) created in file 1
 PISA_reduced_sample = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_reduced_sample.csv")
 
-# create bigger reduced sample
-PISA_raw_1000 = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_raw_1000.csv")
-rename_read_score_female(PISA_raw_1000)
-remove_string_columns(PISA_raw_1000)
-PISA_1000 = drop_columns_with_missingness(PISA_raw_1000, 5)
 
-
-
-#%% MissForest simple try
+#%% MissForest simple try (disregarding categorical variables)
 
 # description: https://towardsdatascience.com/missforest-the-best-missing-data-imputation-algorithm-4d01182aed3
 # and official page: https://pypi.org/project/missingpy/
@@ -87,32 +80,45 @@ X_imputed = imputer.fit_transform(X)
 # all categorical variables. 
 
 # Create an array of integers with our categorical variables
-# in order to do so, we decrease the number of variables for now. 
-# code from file 1, function taking a dataframe and the percentage 
-# of missingness with which columns should be dropped (here everything over 5%)
-PISA_reduced_2 = drop_columns_with_missingness(PISA_reduced_sample, 5)
+# in order to do so, we decrease the number of variables for now by dropping more
 
+# create bigger reduced sample
+# call raw sample 1000
+PISA_raw_1000 = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_raw_1000.csv")
+# renaming: function from file 1
+rename_read_score_female(PISA_raw_1000)
+# removing string columns: function from file 1
+remove_string_columns(PISA_raw_1000)
+# removing rows with a missingness ofer x percent: function from file 1
+PISA_reduced_1000 = drop_columns_with_missingness(PISA_raw_1000, 5)
 
-fit(self, X, y=None, cat_vars=None):
-    Fit the imputer on X.
+# dropping students without reading score doesnt work somehow. Also not clear if 
+# "read_score" or 'PV1READ', because renaming doesn not always work.
+# PISA_reduced_1000 = drop_students_without_read_score(PISA_reduced_1000)
 
-    Parameters
-    ----------
-    X : {array-like}, shape (n_samples, n_features)
-        Input data, where ``n_samples`` is the number of samples and
-        ``n_features`` is the number of features.
+# next line does not work, but there are 7 NaN's in the sample... :(
+# maybe better finalize function in file 1 and see if that works!
+# PISA_reduced_1000 = PISA_reduced_1000.dropna(subset=['read_score'], inplace=True)
 
-    cat_vars : int or array of ints, optional (default = None)
-        An int or an array containing column indices of categorical
-        variable(s)/feature(s) present in the dataset X.
-        ``None`` if there are no categorical variables in the dataset.
+# -> PISA_reduced_1000 is a only numerical, reduced sample with 1000 observations
+# right now there is 7 students with missing read_score, needs to be changed later...
 
-    Returns
-    -------
-    self : object
-        Returns self.
+X = PISA_reduced_1000
+imputer = MissForest(max_iter = 5, n_estimators = 50, max_features = 100, n_jobs = -1, random_state = 42)
+# cat_vars : int or array of ints containing column indices of categorical variable(s)
+# create array
+cat_vars = np.array([0,1,2,5,7,8,9,10,11,12,13,14,15])
 
+imputer.fit(X, cat_vars = cat_vars)
+PISA_reduced_imputed = imputer.transform(X)
 
+# convert to pandas dataframe
+PISA_reduced_imputed = pd.DataFrame(PISA_reduced_imputed)
+
+# save result as csv file
+PISA_reduced_imputed.to_csv("data/PISA_1000_imputed.csv")
+
+imputer.statistics_
 
 # statistics_ : Dictionary of length two
     # The first element is an array with the mean of each numerical feature
@@ -120,95 +126,30 @@ fit(self, X, y=None, cat_vars=None):
     # categorical features being imputed (if available, otherwise it
     # will be None).
 
+# creating a function. 
+# "array" needs to be an array with the indices of categorical variables
+def restricted_missforest(dataframe, array):
+    X = dataframe
+    imputer = MissForest(max_iter = 5, n_estimators = 50, max_features = 100, n_jobs = -1, random_state = 42)
+    imputer.fit(X, cat_vars = array)
+    dataframe = imputer.transform(X)
+    dataframe = pd.DataFrame(dataframe)
+
+    
+
 
 #%% compare different iterative imputation methods
 
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-
-# To use this experimental feature, we need to explicitly ask for it:
-from sklearn.experimental import enable_iterative_imputer  # noqa
-from sklearn.datasets import fetch_california_housing
-from sklearn.impute import SimpleImputer
-from sklearn.impute import IterativeImputer
-from sklearn.linear_model import BayesianRidge
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import ExtraTreesRegressor
-from sklearn.neighbors import KNeighborsRegressor
-from sklearn.pipeline import make_pipeline
-from sklearn.model_selection import cross_val_score
-
-N_SPLITS = 5
-
-rng = np.random.RandomState(0)
+# https://scikit-learn.org/stable/auto_examples/impute/plot_iterative_imputer_variants_comparison.html#sphx-glr-auto-examples-impute-plot-iterative-imputer-variants-comparison-py
 
 X_full = PISA_reduced_sample.drop(columns=["read_score"])
 y_full = PISA_reduced_sample["read_score"]
 
 n_samples, n_features = X_full.shape
 
-# Estimate the score on the entire dataset, without the missing values
-br_estimator = BayesianRidge()
-score_full_data = pd.DataFrame(
-    cross_val_score(
-        br_estimator, X_full, y_full, scoring="neg_mean_squared_error", cv=N_SPLITS
-    ),
-    columns=["Full Data"],
-)
-
-# Add a single missing value to each row
-X_missing = X_full.copy()
-y_missing = y_full
-missing_samples = np.arange(n_samples)
-missing_features = rng.choice(n_features, n_samples, replace=True)
-X_missing[missing_samples, missing_features] = np.nan
-
-# Estimate the score after imputation (mean and median strategies)
-score_simple_imputer = pd.DataFrame()
-for strategy in ("mean", "median"):
-    estimator = make_pipeline(
-        SimpleImputer(missing_values=np.nan, strategy=strategy), br_estimator
-    )
-    score_simple_imputer[strategy] = cross_val_score(
-        estimator, X_missing, y_missing, scoring="neg_mean_squared_error", cv=N_SPLITS
-    )
-
-# Estimate the score after iterative imputation of the missing values
-# with different estimators
-estimators = [
-    BayesianRidge(),
-    DecisionTreeRegressor(max_features="sqrt", random_state=0),
-    ExtraTreesRegressor(n_estimators=10, random_state=0),
-    KNeighborsRegressor(n_neighbors=15),
-]
-score_iterative_imputer = pd.DataFrame()
-for impute_estimator in estimators:
-    estimator = make_pipeline(
-        IterativeImputer(random_state=0, estimator=impute_estimator), br_estimator
-    )
-    score_iterative_imputer[impute_estimator.__class__.__name__] = cross_val_score(
-        estimator, X_missing, y_missing, scoring="neg_mean_squared_error", cv=N_SPLITS
-    )
-
-scores = pd.concat(
-    [score_full_data, score_simple_imputer, score_iterative_imputer],
-    keys=["Original", "SimpleImputer", "IterativeImputer"],
-    axis=1,
-)
-
-# plot california housing results
-fig, ax = plt.subplots(figsize=(13, 6))
-means = -scores.mean()
-errors = scores.std()
-means.plot.barh(xerr=errors, ax=ax)
-ax.set_title("California Housing Regression with Different Imputation Methods")
-ax.set_xlabel("MSE (smaller is better)")
-ax.set_yticks(np.arange(means.shape[0]))
-ax.set_yticklabels([" w/ ".join(label) for label in means.index.tolist()])
-plt.tight_layout(pad=1)
-plt.show()
-
+# ...
+#
+#
 
 #%% alternative multivariate imputation (links above, this is only the beginning)
 
@@ -216,26 +157,9 @@ plt.show()
 # https://scikit-learn.org/stable/modules/impute.html
 # https://scikit-learn.org/stable/auto_examples/impute/plot_missing_values.html#sphx-glr-auto-examples-impute-plot-missing-values-py
 
-# set variables
-rng = np.random.RandomState(42)
-X_PISA, y_PISA = PISA_reduced_sample
-
-# to compare different imputers, we create a function which will score the results on the differently 
-# imputed data
-
-rng = np.random.RandomState(42)
-
-from sklearn.ensemble import RandomForestRegressor
-
-# To use the experimental IterativeImputer, we need to explicitly ask for it:
-from sklearn.experimental import enable_iterative_imputer  # noqa
-from sklearn.impute import SimpleImputer, KNNImputer, IterativeImputer
-from sklearn.model_selection import cross_val_score
-from sklearn.pipeline import make_pipeline
-
-
-N_SPLITS = 5
-regressor = RandomForestRegressor(random_state=0)
+# ...
+#
+#
 
 #%% simple and fast version (univariate)
 
