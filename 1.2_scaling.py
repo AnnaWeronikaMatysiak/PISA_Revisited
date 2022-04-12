@@ -10,6 +10,7 @@ Created on Mon Apr 11 16:56:52 2022
 
 To Do's
 - follow instructions below
+- do we need to normalize? stad. scaler produces small values but only z-transformed (largest around 3.5)
 
 Endproduct should be a dataframe saved to csv without NA's and with normalized values
 

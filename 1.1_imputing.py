@@ -65,7 +65,10 @@ X_imputed = imputer.fit_transform(X)
 
 # documentation https://pypi.org/project/missingpy/
 
-# max_iter: default= 10. The maximum of iterations.
+# type "pip install missingpy" in the console for installation
+from missingpy import MissForest
+
+# max_iter: default = 10. The maximum of iterations.
 # n_estimators : integer, optional (default=100). The number of trees in the forest.
 # max_features : The number of features to consider when looking for the best split
 # n_jobs : int or None, optional (default=None) The number of jobs to run in parallel 
@@ -93,7 +96,7 @@ remove_string_columns(PISA_raw_1000)
 PISA_reduced_1000 = drop_columns_with_missingness(PISA_raw_1000, 5)
 
 # dropping students without reading score doesnt work somehow. Also not clear if 
-# "read_score" or 'PV1READ', because renaming doesn not always work.
+# "read_score" or 'PV1READ', because renaming does not always work.
 # PISA_reduced_1000 = drop_students_without_read_score(PISA_reduced_1000)
 
 # next line does not work, but there are 7 NaN's in the sample... :(
@@ -126,7 +129,7 @@ imputer.statistics_
     # categorical features being imputed (if available, otherwise it
     # will be None).
 
-# creating a function. 
+# creating a function. (finish later when it is more precise)
 # "array" needs to be an array with the indices of categorical variables
 def restricted_missforest(dataframe, array):
     X = dataframe
