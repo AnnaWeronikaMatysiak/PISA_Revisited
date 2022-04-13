@@ -27,7 +27,7 @@ PISA_sample_1000 = pd.read_csv("data/PISA_sample_1000.csv")
 
 #%% define dependent and independent variables
 
-X_sample=PISA_sample_10.drop(columns=["read_score"])
+X_=PISA_sample_10.drop(columns=["read_score"])
 y_sample=PISA_sample_10["read_score"]
 
 #becuase y is an array, I change it back to data frame
@@ -47,3 +47,17 @@ rnd_rgr =  RandomForestRegressor(n_estimators = 100, max_leaf_nodes = 10, max_fe
 
 # fit the model to our training data
 rnd_rgr.fit(X_sample, y_sample)
+
+#%% Linear SVM base line 
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import Pipeline 
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import LinearSVC
+
+
+polynomial_svm_clf = Pipeline([("poly_features", PolynomialFeatures(degree=3)),
+                               ("scaler", StandardScaler()),("svm_clf", 
+                                LinearSVC(C=10, loss="hinge")) ])
+#polynomial_svm_clf.fit(X_train, y_train)
+
+

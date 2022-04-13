@@ -32,15 +32,18 @@ from sklearn.metrics import r2_score
 #runpy.run_path(path_name = '/My Drive/PISA_Revisited/0_setup.py')
 
 #%%
-PISA_sample_100 = pd.read_csv("/My Drive/PISA_Revisited/data/PISA_sample_100.csv")
+#PISA_sample_100 = pd.read_csv("/My Drive/PISA_Revisited/data/PISA_sample_100.csv")
 #utill we drop these variables from the whole data set, I manualy exclude them from sample
-PISA_sample_100 = PISA_sample_100.drop(columns=["VER_DAT", "CNT", "CYC", "STRATUM"])
+#PISA_sample_100 = PISA_sample_100.drop(columns=["VER_DAT", "CNT", "CYC", "STRATUM"])
 
-X_train=PISA_sample_100.drop(columns=["read_score"])
-y_train=PISA_sample_100["read_score"]
+#X_train=PISA_sample_100.drop(columns=["read_score"])
+#y_train=PISA_sample_100["read_score"]
 
 #becuase y is an array, I change it back to data frame
-y_train=y_train.to_frame()
+#y_train=y_train.to_frame()
+
+midterm_train = pd.read_csv("/My Drive/PISA_Revisited/data/midterm_train.csv") 
+midterm_validation=pd.read_csv("/My Drive/PISA_Revisited/data/midterm_validation.csv")
 
 
 #for current tests untill we have clean data I replaced the data columns
