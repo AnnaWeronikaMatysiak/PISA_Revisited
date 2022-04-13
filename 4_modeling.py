@@ -28,16 +28,6 @@ midterm_train = pd.read_csv("/My Drive/PISA_Revisited/data/midterm_train.csv")
 midterm_validation=pd.read_csv("/My Drive/PISA_Revisited/data/midterm_val.csv")
 
 #%% define dependent and independent variables
-
-#X_=PISA_sample_10.drop(columns=["read_score"])
-#y_sample=PISA_sample_10["read_score"]
-
-#becuase y is an array, I change it back to data frame
-#y_sample=y_sample.to_frame()
-
-#code to check if any of the columns still have NAs:
-#y_train.isnull().any()
-
 X_train=midterm_train.drop(columns=["read_score"])
 y_train=midterm_train["read_score"]
 
@@ -71,5 +61,7 @@ polynomial_svm_clf = Pipeline([("poly_features", PolynomialFeatures(degree=3)),
                                ("scaler", StandardScaler()),("svm_clf", 
                                 LinearSVC(C=10, loss="hinge")) ])
 polynomial_svm_clf.fit(X_train, y_train)
+
+
 
 
