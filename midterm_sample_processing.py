@@ -38,22 +38,27 @@ midterm_raw.dropna(subset = ['read_score'], inplace = True)
 remove_string_columns(midterm_raw)
 
 # removing rows with a missingness over x percent: function from file 1
-midterm_reduced = drop_columns_with_missingness(midterm_raw, 10)
+midterm_reduced = drop_columns_with_missingness(midterm_raw, 5)
 
+# save as csv as a backup
+midterm_reduced.to_csv("data/midterm_reduced.csv")
 
-#%% imputing
+# call if needed
+midterm_reduced = pd.read_csv("data/midterm_reduced.csv")
+
+#%% imputing (Runtime: 1h40m for the first try with 10 percent missingness and old parameter. The current version is much faster.)
 
 # type "pip install missingpy" in the console for installation
 from missingpy import MissForest
 
 X = midterm_reduced
 
-imputer = MissForest(max_iter = 5, n_estimators = 50, max_features = 100, n_jobs = -1, random_state = 42)
+imputer = MissForest(max_iter = 5, n_estimators = 30, max_features = 80, n_jobs = -1, random_state = 42)
 
 # cat_vars : int or array of ints containing column indices of categorical variable(s)
 # For midterm, these include only the most obvious categorical, but not all ordinal variables
 # Treatment of ordinal variables to be discussed...
-cat_vars = np.array(range(15))
+cat_vars = np.array(range(17))
 
 # fit imputer
 imputer.fit(X, cat_vars = cat_vars)
@@ -61,14 +66,14 @@ imputer.fit(X, cat_vars = cat_vars)
 # apply imputer
 midterm_imputed = imputer.transform(X)
 
-# convert to pandas dataframe
-midterm_imputed = pd.DataFrame(midterm_imputed)
+# convert to pandas dataframe AND ADD COLUMN NAMES FROM BEFORE!
+midterm_imputed = pd.DataFrame(midterm_imputed, columns = midterm_reduced.columns)
 
 # save result as csv file (just as a backup)
 midterm_imputed.to_csv("data/midterm_imputed.csv")
 
 
-#%% scaling (runtime: 1h40m)
+#%% scaling 
 
 # Since in our research question, we don't care about the actual reading score
 # but moreover we care about the predicor variables of it, we can also scale 
@@ -84,8 +89,8 @@ scaler.fit(midterm_imputed)
 # scale data
 midterm_scaled = scaler.transform(midterm_imputed)
 
-# convert to pandas dataframe
-midterm_scaled = pd.DataFrame(midterm_scaled)
+# convert to pandas dataframe AND ADD COLUMN NAMES FROM BEFORE!
+midterm_scaled = pd.DataFrame(midterm_scaled, columns = midterm_imputed.columns)
 
 # save result as csv file (just as a backup)
 midterm_scaled.to_csv("data/midterm_scaled.csv")
