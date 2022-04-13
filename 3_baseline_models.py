@@ -21,9 +21,9 @@ from sklearn.linear_model import LinearRegression
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import PolynomialFeatures
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
-#from sklearn.linear_model import Ridge
+from sklearn.linear_model import Ridge
 from sklearn.linear_model import RidgeCV
 from sklearn.metrics import r2_score
 
@@ -42,23 +42,34 @@ from sklearn.metrics import r2_score
 #becuase y is an array, I change it back to data frame
 #y_train=y_train.to_frame()
 
-midterm_train = pd.read_csv("/My Drive/PISA_Revisited/data/midterm_train.csv") 
-midterm_validation=pd.read_csv("/My Drive/PISA_Revisited/data/midterm_validation.csv")
-
 
 #for current tests untill we have clean data I replaced the data columns
 # with NAs witht the colum means. This does not work for "test" column, so I drop it. 
 #By the way, what is that column about?
-y_train=y_train.apply(lambda x: x.fillna(x.mean()))
-X_train=X_train.apply(lambda x: x.fillna(x.mean())) 
-X_train=X_train.drop(columns=["test"])
+#y_train=y_train.apply(lambda x: x.fillna(x.mean()))
+#X_train=X_train.apply(lambda x: x.fillna(x.mean())) 
+#X_train=X_train.drop(columns=["test"])
 
 #code to check if any of the columns have NAs:
 #y_train.isnull().any()
 
+
 # repeat that for validation sets
-y_validation=...
-X_validation=...
+
+### MID-TERM:
+midterm_train = pd.read_csv("/My Drive/PISA_Revisited/data/midterm_train.csv") 
+midterm_validation=pd.read_csv("/My Drive/PISA_Revisited/data/midterm_val.csv")
+
+X_train=midterm_train.drop(columns=["read_score"])
+y_train=midterm_train["read_score"]
+
+#y_train=y_train.to_frame()
+
+
+X_validation=midterm_validation.drop(columns=["read_score"])
+y_validation=midterm_validation["read_score"]
+
+#y_validation=y_train.to_frame()
 
 #%% linear regression
 lin_reg= LinearRegression()
@@ -68,7 +79,6 @@ lin_reg.coef_
 lin_reg.intercept_
 
 y_predicted=lin_reg.predict(X_validation)
-y_predicted.head()
 
 #%% evaluation 
 mse = mean_squared_error(y_validation, y_predicted)
@@ -101,7 +111,7 @@ print(rmse_ridge)
 
 #%% plots
 
-#%% polynomial regressions 
+#%% polynomial regressions degree=2
 
 poly_features = PolynomialFeatures(degree=2, include_bias=False)
 X_poly = poly_features.fit_transform(X_train)
@@ -109,43 +119,105 @@ X_poly = poly_features.fit_transform(X_train)
 lin_reg_pol = LinearRegression()
 lin_reg_pol.fit(X_poly, y_train)
 lin_reg_pol.intercept_, lin_reg_pol.coef_
-y_predicted_poly=lin_reg_pol.predict(X_validation) 
-y_predicted_poly.head()
 
+# The coefficients
+print ('Coefficients: ', lin_reg_pol.coef_)
+print ('Intercept: ',lin_reg_pol.intercept_)
 
-poly_features_3 = PolynomialFeatures(degree=3, include_bias=False)
-X_poly = poly_features_3.fit_transform(X_train)
+#y_predicted_poly=lin_reg_pol.predict(X_validation) 
+validation_X_poly = poly_features.fit_transform(X_validation)
+validation_y_poly = lin_reg_pol.predict(validation_X_poly)
 
-lin_reg_pol_3 = LinearRegression()
-lin_reg_pol_3.fit(X_poly, y_train)
-lin_reg_pol_3.intercept_, lin_reg_pol_3.coef_
-y_predicted_poly_3=lin_reg_pol.predict(X_validation) 
-y_predicted_poly_3.head()
-
-#%% evaluation 
-mse_poly = mean_squared_error(y_validation, y_predicted_poly)
-rmse_poly= np.sqrt(mean_squared_error(y_validation, y_predicted_poly))
-
-r2_poly=r2_score(y_validation, y_predicted_poly)
-r2_poly_3= r2_score(y_validation, y_predicted_poly_3)
-
-print(r2_poly)
-print(r2_poly_3)
+mse_poly = mean_squared_error(y_validation,validation_y_poly)
+rmse_poly= np.sqrt(mean_squared_error(y_validation, validation_y_poly))
+r2_poly=r2_score(y_validation,validation_y_poly)
 print(mse_poly)
 print(rmse_poly)
+print(r2_poly)
 
-#%% Linear SVM base line 
-from sklearn.pipeline import Pipeline 
-from sklearn.preprocessing import StandardScaler
-from sklearn.svm import LinearSVC
+#%%
+poly_features_3 = PolynomialFeatures(degree=3, include_bias=False)
+X_poly_3 = poly_features_3.fit_transform(X_train)
+
+lin_reg_pol_3 = LinearRegression()
+lin_reg_pol_3.fit(X_poly_3, y_train)
+lin_reg_pol_3.intercept_, lin_reg_pol_3.coef_
+
+# The coefficients
+print ('Coefficients: ', lin_reg_pol_3.coef_)
+print ('Intercept: ',lin_reg_pol_3.intercept_)
+
+#y_predicted_poly=lin_reg_pol.predict(X_validation) 
+validation_X_poly_3 = poly_features_3.fit_transform(X_validation)
+validation_y_poly_3 = lin_reg_pol_3.predict(validation_X_poly_3)
+
+mse_poly_3 = mean_squared_error(y_validation,validation_y_poly_3)
+rmse_poly_3= np.sqrt(mean_squared_error(y_validation, validation_y_poly_3))
+r2_poly_3=r2_score(y_validation,validation_y_poly_3)
+print(mse_poly_3)
+print(rmse_poly_3)
+print(r2_poly_3)
+
+#%%
+"""
+from sklearn.pipeline import Pipeline
+def plot_model(model_class, polynomial, alphas, **model_kargs):
+    for alpha, style in zip(alphas, ("b-", "g--", "r:")):
+        model = model_class(alpha, **model_kargs) if alpha > 0 else LinearRegression()
+        if polynomial:
+            model = Pipeline([
+                    ("poly_features", PolynomialFeatures(degree=10, include_bias=False)),
+
+                    ("regul_reg", model),
+                ])
+        model.fit(X_train, y_train)
+        y_new_regul = model.predict(X_validation)
+        lw = 2 if alpha > 0 else 1
+        plt.plot(X_validation, y_new_regul, style, linewidth=lw, label=r"$\alpha = {}$".format(alpha))
+    plt.plot(X_train, y_train, "b.", linewidth=3)
+    plt.legend(loc="upper left", fontsize=15)
+    plt.xlabel("$x_1$", fontsize=18)
+    plt.axis([0, 3, 0, 4])
+
+plt.figure(figsize=(8,4))
+plt.subplot(121)
+plot_model(Ridge, polynomial=False, alphas=(0, 10, 100), random_state=42)
+plt.ylabel("$y$", rotation=0, fontsize=18)
+plt.subplot(122)
+plot_model(Ridge, polynomial=True, alphas=(0, 10**-5, 1), random_state=42)
 
 
-polynomial_svm_clf = Pipeline([("poly_features", PolynomialFeatures(degree=3)),
-                               ("scaler", StandardScaler()),("svm_clf", 
-                                LinearSVC(C=10, loss="hinge")) ])
-polynomial_svm_clf.fit(X_train, y_train)
+plt.show()
+
+"""
+
+#%%
+
+poly_features = PolynomialFeatures(degree=2, include_bias=False)
+X_poly = poly_features.fit_transform(X_train)
+
+poly_ridge = RidgeCV(alphas=[1e-3, 1e-2, 1e-1, 1, 10], normalize=True)
+poly_ridge.fit(X_poly, y_train)
+poly_ridge.intercept_, poly_ridge.coef_
 
 
-#%% SVM-RFE
+
+# The coefficients
+print ('Coefficients: ', poly_ridge.coef_)
+print ('Intercept: ',poly_ridge.intercept_)
+
+#y_predicted_poly=lin_reg_pol.predict(X_validation) 
+validation_poly_ridge = poly_features_3.fit_transform(X_validation)
+validation_y_poly_ridge = lin_reg_pol_3.predict(validation_poly_ridge)
+
+mse_poly_ridge = mean_squared_error(y_validation,validation_poly_ridge)
+rmse_poly_ridge= np.sqrt(mean_squared_error(y_validation, validation_poly_ridge))
+
+print(mse_poly_ridge)
+print(rmse_poly_ridge)
+
+
+
+
 
 
