@@ -8,9 +8,12 @@ Created on Thu Mar 31 15:14:00 2022
 """
 TO DO:
 - add the validation sets and test models on them
-- add plots
-- add models with changes parameters like alpha, degree of polymomials etc. 
 - at the end, change PISA_sample_100 to the final sample we are using'
+- add basline of SVM-RFE 
+- move SVM, do there hyperparamiter tuning, boosting
+- next stage: plots
+- next stage: visualisation of error
+- next stage:predictions' description an ordering them
 """
 
 #%% import packages
@@ -139,5 +142,7 @@ polynomial_svm_clf = Pipeline([("poly_features", PolynomialFeatures(degree=3)),
                                 LinearSVC(C=10, loss="hinge")) ])
 polynomial_svm_clf.fit(X_train, y_train)
 
+
+#%% SVM-RFE
 
 
