@@ -11,7 +11,7 @@ To Do's'
 - create imputing and compare different approaches (on different variables?)
 
 Problems
-- we should maybe not decide for imputer for everything - how do we decide this?
+- we should maybe not decide for one single imputer for everything - how do we decide this?
 
 Endproduct should be a dataframe saved to csv without NA's. 
 The file takes the PISA_reduced.csv file as a starting point 

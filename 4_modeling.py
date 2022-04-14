@@ -62,6 +62,6 @@ polynomial_svm_clf = Pipeline([("poly_features", PolynomialFeatures(degree=3)),
                                 LinearSVC(C=10, loss="hinge")) ])
 polynomial_svm_clf.fit(X_train, y_train)
 
-
-
+# definitely check out this link on feature importance with SVM!!!
+# https://stackoverflow.com/questions/41592661/determining-the-most-contributing-features-for-svm-classifier-in-sklearn
 

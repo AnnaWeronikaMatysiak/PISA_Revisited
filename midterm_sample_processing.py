@@ -73,7 +73,12 @@ midterm_imputed = pd.DataFrame(midterm_imputed, columns = midterm_reduced.column
 midterm_imputed.to_csv("data/midterm_imputed.csv")
 
 
-#%% scaling 
+#%% scaling (normalization)
+
+# "If the distribution of the quantity is normal, then it should be standardized,
+# otherwise, the data should be normalized." https://machinelearningmastery.com/standardscaler-and-minmaxscaler-transforms-in-python/
+
+# more on which data can be used for which models: https://medium.com/analytics-vidhya/handling-categorical-features-using-encoding-techniques-in-python-7b46207111ca
 
 # Since in our research question, we don't care about the actual reading score
 # but moreover we care about the predicor variables of it, we can also scale 
@@ -95,6 +100,14 @@ midterm_scaled = pd.DataFrame(midterm_scaled, columns = midterm_imputed.columns)
 # save result as csv file (just as a backup)
 midterm_scaled.to_csv("data/midterm_scaled.csv")
 
+# for the categorical variables (first columns until "female") we should use OneHotEncoder
+# https://towardsdatascience.com/choosing-the-right-encoding-method-label-vs-onehot-encoder-a4434493149b
+
+# check unique vaues to see what is actually factorial
+unique_values = midterm_reduced.nunique(axis=0)
+unique_values.head(20)
+
+# check each that has less than XX unique values
 
 #%% splitting
 
