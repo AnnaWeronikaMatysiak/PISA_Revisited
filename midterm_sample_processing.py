@@ -58,7 +58,7 @@ imputer = MissForest(max_iter = 5, n_estimators = 30, max_features = 80, n_jobs 
 # cat_vars : int or array of ints containing column indices of categorical variable(s)
 # For midterm, these include only the most obvious categorical, but not all ordinal variables
 # Treatment of ordinal variables to be discussed...
-cat_vars = np.array(range(17))
+cat_vars = np.array(range(17)) 
 
 # fit imputer
 imputer.fit(X, cat_vars = cat_vars)
@@ -103,7 +103,7 @@ midterm_scaled.to_csv("data/midterm_scaled.csv")
 # for the categorical variables (first columns until "female") we should use OneHotEncoder
 # https://towardsdatascience.com/choosing-the-right-encoding-method-label-vs-onehot-encoder-a4434493149b
 
-# check unique vaues to see what is actually factorial
+# check unique values to see what is actually factorial
 unique_values = midterm_reduced.nunique(axis=0)
 unique_values.head(20)
 

@@ -38,6 +38,7 @@ X_validation=midterm_validation.drop(columns=["read_score"])
 y_validation=midterm_validation["read_score"]
 
 y_validation=y_train.to_frame()
+
 #%% Random Forest Regressor
 
 from sklearn.ensemble import RandomForestRegressor
@@ -49,6 +50,7 @@ rnd_rgr =  RandomForestRegressor(n_estimators = 100, max_leaf_nodes = 10, max_fe
 
 # fit the model to our training data
 rnd_rgr.fit(X_train, y_train)
+
 
 #%% Linear SVM base line 
 from sklearn.preprocessing import PolynomialFeatures
