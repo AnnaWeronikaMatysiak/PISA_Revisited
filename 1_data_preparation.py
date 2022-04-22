@@ -8,6 +8,7 @@ Created on Fri Apr 22 14:56:52 2022
 
 #%% call setup file
 
+import openpyxl
 import runpy
 runpy.run_path(path_name = '0_setup.py')
 
@@ -44,7 +45,9 @@ PISA_raw_100000.to_csv("data/PISA_raw_100000.csv")
 #%% feature selection
 
 # create array with features to keep (read in column from excel doc)
-covariates = 
+# not sure if the path/directory here is correct, I didn't want to hard code it
+codebook = pd.read_excel('GitHub/PISA_Revisited/codebook/codebook_covariates_PISA.xlsx')
+covariates = codebook.iloc[:,3]
 
 # select the features included in the array
 PISA_selection = PISA_raw_100000[covariates]
