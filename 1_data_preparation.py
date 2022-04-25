@@ -10,6 +10,7 @@ Created on Fri Apr 22 14:56:52 2022
 
 import openpyxl
 import runpy
+import numpy as np
 runpy.run_path(path_name = '0_setup.py')
 
 # imports sys, sklearn, numpy, os, matplotlib, pathlib
@@ -45,12 +46,14 @@ PISA_raw_100000.to_csv("data/PISA_raw_100000.csv")
 #%% feature selection
 
 # create array with features to keep (read in column from excel doc)
-# not sure if the path/directory here is correct, I didn't want to hard code it
-codebook = pd.read_excel('GitHub/PISA_Revisited/codebook/codebook_covariates_PISA.xlsx')
+codebook = pd.read_excel('/Users/max.eckert/Documents/GitHub/PISA_Revisited/codebook/codebook_covariates_PISA.xlsx')
 covariates = codebook.iloc[:,3]
+#transform to array
+covariates_array = covariates.to_numpy()
+covariates_array_new = np.delete(covariates_array, 1)
 
 # select the features included in the array
-PISA_selection = PISA_raw_100000[covariates]
+PISA_selection = PISA_raw_100000[covariates_array_new]
 
 # plot with missingness
 
