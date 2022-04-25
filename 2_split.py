@@ -8,9 +8,6 @@ Created on Mon Apr 25 20:28:33 2022
 
 """
 TO DO:
-- run again when preprocessed completely
-- change the dataset to the "preprocessed 1000"
-- split according to the lab
 - add subsets by gender
 """
 #%% call setup file
@@ -28,13 +25,13 @@ import pandas as pd
 
 # read csv file (current version, excahnge later)
 # taken from file 1, but still missing imputing and normalization -> see file 1.1 and 1.2
-PISA_raw_1000 = pd.read_csv("/My Drive/PISA_Revisited/data/PISA_raw_1000.csv")
+PISA_prepared = pd.read_csv("/My Drive/PISA_Revisited/data/PISA_prepared.csv")
 
 #%% new split
 from sklearn.model_selection import train_test_split
 
-X=PISA_raw_1000.drop(columns=["read_score"])
-y=PISA_raw_1000["read_score"]
+X=PISA_prepared.drop(columns=["read_score"])
+y=PISA_prepared["read_score"]
 y=y.to_frame()
 
 
@@ -46,14 +43,11 @@ X_test, y_test, X_val_1, y_val_1 = train_test_split(X_test_val_1, y_test_val_1, 
 X_test.to_csv("data/X_test.csv")
 y_test.to_csv("data/y_test.csv")
 X_train.to_csv("data/X_train.csv")
-y_train.to_scv("data/y_train.csv")
+y_train.to_csv("data/y_train.csv")
 
 X_val_1.to_csv("data/X_val_1.csv")
 y_val_1.to_csv("data/y_val_1.csv")
 X_val_2.to_csv("data/X_val_2.csv")
-y_val_2.to_scv("data/y_val_2.csv")
-
-
-
+y_val_2.to_csv("data/y_val_2.csv")
 
 

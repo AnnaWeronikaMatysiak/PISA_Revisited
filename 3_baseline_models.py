@@ -7,9 +7,7 @@ Created on Thu Mar 31 15:14:00 2022
 
 """
 TO DO:
-- change datasets to the "preprocessed 1000"
-- visualisation of error
-- predictions' description an ordering them
+- visualisation of error measures
 """
 
 #%% call setup file
@@ -31,16 +29,17 @@ from sklearn.metrics import mean_absolute_error
 #code to check if any of the columns have NAs:
 #y_train.isnull().any()
 
+#X_test = pd.read_csv("/My Drive/PISA_Revisited/data/X_test.csv") 
+#y_test = pd.read_csv("/My Drive/PISA_Revisited/data/y_test.csv")
 
-### MID-TERM:
-midterm_train = pd.read_csv("/My Drive/PISA_Revisited/data/midterm_train.csv") 
-midterm_validation=pd.read_csv("/My Drive/PISA_Revisited/data/midterm_val.csv")
+X_train = pd.read_csv("/My Drive/PISA_Revisited/data/X_train.csv")
+y_train = pd.read_csv("/My Drive/PISA_Revisited/data/y_train.csv")
 
-X_train=midterm_train.drop(columns=["read_score"])
-y_train=midterm_train["read_score"]
+X_val_1 = pd.read_csv("/My Drive/PISA_Revisited/data/X_val_1.csv") 
+y_val_1 = pd.read_csv("/My Drive/PISA_Revisited/data/y_val_1.csv")
 
-X_validation=midterm_validation.drop(columns=["read_score"])
-y_validation=midterm_validation["read_score"]
+X_val_2 = pd.read_csv("/My Drive/PISA_Revisited/data/X_val_2.csv") 
+y_val_2 = pd.read_csv("/My Drive/PISA_Revisited/data/y_val_2.csv")
 
 #%% linear regression
 
@@ -51,13 +50,14 @@ lin_reg.fit(X_train, y_train)
 lin_reg.coef_
 lin_reg.intercept_
 
-#evaluation
-y_predicted=lin_reg.predict(X_validation)
+#predicting
+y_predicted=lin_reg.predict(X_val_1)
 
-mse = mean_squared_error(y_validation, y_predicted)
-rmse= np.sqrt(mean_squared_error(y_validation, y_predicted))
-mae= mean_absolute_error(y_validation, y_predicted)
+#evaluation
+mse = mean_squared_error(y_val_1, y_predicted)
+rmse= np.sqrt(mean_squared_error(y_val_1, y_predicted))
+mae= mean_absolute_error(y_val_1, y_predicted)
 print('MSE_linear: ',mse)
 print('RMSE_linear: ',rmse)
-print('MSE_linear: ', mae)
+print('MAE_linear: ', mae)
 

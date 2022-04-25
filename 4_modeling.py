@@ -3,18 +3,18 @@
 """
 Created on Thu Apr  7 13:31:29 2022
 
-@author: Jo
+@author: Jo&Anna
 """
 
 """
 TO DO:
-- change dataset to the "preprocessed 1000"
-- polynomial regression with ridge penalty
-- apply structure from the lab
-- parameter analysis
+- polynomial regression with ridge penalty  - add evaluations
+- add extra trees with evalautions
+- work on the decision trees
+- apply evaluation structure from the lab 8.
 - performance plots
 - add hyperparamether tuning
-- add advanced modeling
+- research pipeline and gride search
 """
 
 #%% necessary packages
@@ -38,16 +38,17 @@ runpy.run_path(path_name = '/0_setup.py')
 # defines function save_fig()
 
 #%% read in data
-midterm_train = pd.read_csv("/My Drive/PISA_Revisited/data/midterm_train.csv") 
-midterm_validation=pd.read_csv("/My Drive/PISA_Revisited/data/midterm_val.csv")
+#X_test = pd.read_csv("/My Drive/PISA_Revisited/data/X_test.csv") 
+#y_test = pd.read_csv("/My Drive/PISA_Revisited/data/y_test.csv")
 
-#%% define dependent and independent variables
-### MID-TERM:
-X_train=midterm_train.drop(columns=["read_score"])
-y_train=midterm_train["read_score"]
+X_train = pd.read_csv("/My Drive/PISA_Revisited/data/X_train.csv")
+y_train = pd.read_csv("/My Drive/PISA_Revisited/data/y_train.csv")
 
-X_validation=midterm_validation.drop(columns=["read_score"])
-y_validation=midterm_validation["read_score"]
+X_val_1 = pd.read_csv("/My Drive/PISA_Revisited/data/X_val_1.csv") 
+y_val_1 = pd.read_csv("/My Drive/PISA_Revisited/data/y_val_1.csv")
+
+X_val_2 = pd.read_csv("/My Drive/PISA_Revisited/data/X_val_2.csv") 
+y_val_2 = pd.read_csv("/My Drive/PISA_Revisited/data/y_val_2.csv")
 
 #%% ridge regression
 # in case we need to scale it:
@@ -60,37 +61,18 @@ ridge_reg = RidgeCV(alphas=[1e-3, 1e-2, 1e-1, 1, 10], normalize=True)
 ridge_reg_model=ridge_reg.fit(X_train, y_train)
 
 #evaluation
-predicted_ridge=ridge_reg.predict(X_validation)
+predicted_ridge=ridge_reg.predict(X_val_1)
 
 #to check which alpha was used
 ridge_reg_model.alpha_
-mse_ridge = mean_squared_error(y_validation, predicted_ridge)
-rmse_ridge= np.sqrt(mean_squared_error(y_validation, predicted_ridge))
-mae_ridge=mean_absolute_error(y_validation, predicted_ridge)
+mse_ridge = mean_squared_error(y_val_1, predicted_ridge)
+rmse_ridge= np.sqrt(mean_squared_error(y_val_1, predicted_ridge))
+mae_ridge=mean_absolute_error(y_val_1, predicted_ridge)
 
 print('MSE_ridge: ',mse_ridge)
 print('RMSE_ridge: ',rmse_ridge)
 print('MAE_ridge: ', mae_ridge)
 
-
-#%% linear regression
-
-#training
-lin_reg= LinearRegression()
-lin_reg.fit(X_train, y_train)   
-
-lin_reg.coef_
-lin_reg.intercept_
-
-#evaluation
-y_predicted=lin_reg.predict(X_validation)
-
-mse = mean_squared_error(y_validation, y_predicted)
-rmse= np.sqrt(mean_squared_error(y_validation, y_predicted))
-mae= mean_absolute_error(y_validation, y_predicted)
-print('MSE_linear: ',mse)
-print('RMSE_linear: ',rmse)
-print('MSE_linear: ', mae)
 
 #%% polynomial regressions degree=2
 
@@ -103,53 +85,32 @@ lin_reg_pol.fit(X_poly, y_train)
 lin_reg_pol.intercept_, lin_reg_pol.coef_
 
 #test
-validation_X_poly = poly_features.fit_transform(X_validation)
+validation_X_poly = poly_features.fit_transform(X_val_1)
 validation_y_poly = lin_reg_pol.predict(validation_X_poly)
 
 #evaluation
-mse_poly = mean_squared_error(y_validation,validation_y_poly)
-rmse_poly= np.sqrt(mean_squared_error(y_validation, validation_y_poly))
-mae_poly = mean_absolute_error(y_validation,validation_y_poly)
-r2_poly=r2_score(y_validation,validation_y_poly)
+mse_poly = mean_squared_error(y_val_1,validation_y_poly)
+rmse_poly= np.sqrt(mean_squared_error(y_val_1, validation_y_poly))
+mae_poly = mean_absolute_error(y_val_1,validation_y_poly)
+r2_poly=r2_score(y_val_1,validation_y_poly)
 
 print('MSE_polynomial: ',mse_poly)
 print('RMSE_polynomial: ',rmse_poly)
 print('MAE_polynomial: ', mae_poly)
 print('R2_polynomial: ',r2_poly)
 
-#%% code is ready but needs a lot of space and power - possibly to run in colab
-poly_features_3 = PolynomialFeatures(degree=3, include_bias=False)
-X_poly_3 = poly_features_3.fit_transform(X_train)
 
-lin_reg_pol_3 = LinearRegression()
-lin_reg_pol_3.fit(X_poly_3, y_train)
-lin_reg_pol_3.intercept_, lin_reg_pol_3.coef_
+#%% polynomial regression with ridge regularisation - to be continued
+from sklearn.linear_model import Ridge
+poly_reg_w_ridge = Ridge()
+poly_reg_w_ridge.fit(X_poly, y_train)   
 
-# The coefficients
-print ('Coefficients: ', lin_reg_pol_3.coef_)
-print ('Intercept: ',lin_reg_pol_3.intercept_)
+poly_reg_w_ridge.coef_
+poly_reg_w_ridge.intercept_
 
-#y_predicted_poly=lin_reg_pol.predict(X_validation) 
-validation_X_poly_3 = poly_features_3.fit_transform(X_validation)
-validation_y_poly_3 = lin_reg_pol_3.predict(validation_X_poly_3)
+#grid search - alphas fro ridge and degrees fro polynomial
 
-mse_poly_3 = mean_squared_error(y_validation,validation_y_poly_3)
-rmse_poly_3= np.sqrt(mean_squared_error(y_validation, validation_y_poly_3))
-r2_poly_3=r2_score(y_validation,validation_y_poly_3)
-print(mse_poly_3)
-print(rmse_poly_3)
-print(r2_poly_3)
-
-#%% POLYNOMIAL WITH RIDGE REGULARISATION
-
-lin_reg.Ridge= LinearRegression()
-lin_reg.Ridge.fit(X_poly, y_train)   
-
-lin_reg.Ridge.coef_
-lin_reg.Ridge.intercept_
-
-
-#%% Random Forest Regressor
+#%% Random Forest Regressor - to be continued
 
 from sklearn.ensemble import RandomForestRegressor
 
@@ -161,4 +122,5 @@ rnd_rgr =  RandomForestRegressor(n_estimators = 100, max_leaf_nodes = 10, max_fe
 # fit the model to our training data
 rnd_rgr.fit(X_train, y_train)
 
+#%% extra trees
 
