@@ -85,10 +85,17 @@ from missingpy import MissForest
 
 X = PISA_selection
 
-imputer = MissForest(max_iter = 5, n_estimators = 25, max_features = 50, n_jobs = -1, random_state = 42)
+# fast version for now
+imputer = MissForest(max_iter = 4, n_estimators = 10, max_features = 10, n_jobs = -1, random_state = 42)
 
 # cat_vars : int or array of ints containing column indices of categorical variable(s)
-cat_names = ['CNTRYID', 'ST004D01T',  'ST005Q01TA', 'ST007Q01TA', 'ST022Q01TA', 'IMMIG']
+# 'country', 'gender', 'mother_school', 'father_school', BINARIES ON HOME, 'home_language', 'immig', BINARIES ON READING
+cat_names = ['CNTRYID', 'ST004D01T',  'ST005Q01TA', 'ST007Q01TA', "ST011Q01TA", 
+             "ST011Q02TA", "ST011Q03TA", "ST011Q04TA", "ST011Q05TA", "ST011Q06TA",
+             "ST011Q07TA", "ST011Q08TA", "ST011Q09TA", "ST011Q10TA", "ST011Q11TA", 
+             "ST011Q12TA", "ST011Q16NA", 'ST022Q01TA', 'IMMIG', "ST153Q01HA", 
+             "ST153Q02HA", "ST153Q03HA", "ST153Q04HA", "ST153Q05HA", "ST153Q06HA",
+             "ST153Q08HA", "ST153Q09HA", "ST153Q10HA"]
 
 def get_col_indices(df, names):
     return df.columns.get_indexer(names)
@@ -110,16 +117,21 @@ PISA_imputed.to_csv("data/PISA_imputed.csv")
 
 #%% OneHotEncoding of categorical variables
 
-# select categorical features
-# 'country', 'gender', 'mother_school', 'father_school', 'home_language', 'immig'
-# see variable cat_names
 
 # transform categorical variables using OneHotEncoder and ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 
-transformer = ColumnTransformer(transformers = [("cat", OneHotEncoder(), cat_names)], remainder = "passthrough")
+# select non-binary categorical features
+# 'country', 'gender', 'mother_school', 'father_school', 'home_language', 'immig'
+non_binary_cat = ['CNTRYID', 'ST004D01T',  'ST005Q01TA', 'ST007Q01TA', 'ST022Q01TA', 'IMMIG']
+
+transformer = ColumnTransformer(transformers = [("cat", OneHotEncoder(), non_binary_cat)], remainder = "passthrough")
 PISA_encoded = transformer.fit_transform(PISA_imputed)
+
+# give column names
+
+
 
 # save as csv
 PISA_encoded.to_csv("data/PISA_encoded.csv")
