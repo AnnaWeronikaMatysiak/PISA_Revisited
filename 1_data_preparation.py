@@ -11,6 +11,9 @@ Created on Fri Apr 22 14:56:52 2022
 import openpyxl
 import runpy
 import numpy as np
+import matplotlib 
+import matplotlib.pyplot as plt
+
 runpy.run_path(path_name = '0_setup.py')
 
 # imports sys, sklearn, numpy, os, matplotlib, pathlib
@@ -56,10 +59,18 @@ covariates_array_new = np.append(covariates_array_new, 'read_score')
 # select the features included in the array
 PISA_selection = PISA_raw_100000[covariates_array_new]
 
-# plot with missingness
-
 # save as csv
 PISA_selection.to_csv("data/PISA_selection.csv")
+
+# plot with missingness
+NaN_count_rel = PISA_selection.isnull().sum()/len(PISA_selection)*100
+NaN_count_rel.sort_values(ascending=False)
+
+plt.hist(NaN_count_rel, 25)
+plt.xlabel('Percentage Missingness')
+plt.ylabel('Number of Covariates')
+plt.title('Distribution of Missingness of Covariates',fontweight ="bold")
+plt.show()
 
 
 #%% OneHotEncoding of categorical variables (book? 2nd chapter)
