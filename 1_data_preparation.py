@@ -67,7 +67,8 @@ PISA_selection.to_csv("data/PISA_selection.csv")
 # MAKE SURE COLUMN NAMES ARE GOOD -> look at book 2nd chapter
 
 # select categorical features
-PISA_cat = PISA[array]
+PISA_cat = np.array(['country', 'home_language', 'immig', 'school_ownership', 'gender', 'mother_school', 'father_school'])
+
 
 """# apply OneHotEncoder
 from sklearn.preprocessing import OneHotEncoder
