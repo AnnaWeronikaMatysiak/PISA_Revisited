@@ -111,12 +111,17 @@ PISA_imputed = imputer.transform(X)
 # convert to pandas dataframe and add column names from before
 PISA_imputed = pd.DataFrame(PISA_imputed, columns = PISA_selection.columns)
 
+# drop first column that was generated before
+PISA_imputed = PISA_imputed.iloc[: , 1:]
+
 # save result as csv file (just as a backup)
 PISA_imputed.to_csv("data/PISA_imputed.csv")
 
 
 #%% OneHotEncoding of categorical variables
 
+# read in if needed
+PISA_imputed = pd.read_csv("data/PISA_imputed.csv")
 
 # transform categorical variables using OneHotEncoder and ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
@@ -126,12 +131,26 @@ from sklearn.compose import ColumnTransformer
 # 'country', 'gender', 'mother_school', 'father_school', 'home_language', 'immig'
 non_binary_cat = ['CNTRYID', 'ST004D01T',  'ST005Q01TA', 'ST007Q01TA', 'ST022Q01TA', 'IMMIG']
 
-transformer = ColumnTransformer(transformers = [("cat", OneHotEncoder(), non_binary_cat)], remainder = "passthrough")
-PISA_encoded = transformer.fit_transform(PISA_imputed)
+# transform categorical variables (this did not work when using the get_feature_names method afterwards...)
+# transformer = ColumnTransformer(transformers = [("cat", encoder, non_binary_cat)], remainder = "passthrough")
+# PISA_encoded = transformer.fit_transform(PISA_imputed)
 
-# give column names
+from category_encoders.one_hot import OneHotEncoder
 
+# create df with categorical features
+cat_df = PISA_imputed[non_binary_cat]
+num_df = PISA_imputed.drop(non_binary_cat, axis=1)
 
+encoder = OneHotEncoder(sparse = False)
+encoder.fit(cat_df)
+
+encoded_df = pd.DataFrame(encoder.fit_transform(cat_df))
+
+# add column names
+encoded_df.columns = encoder.get_feature_names(cat_df.columns)
+
+# concatenate with numerical columns
+PISA_encoded = pd.concat([num_df, encoded_df], axis=1)
 
 # save as csv
 PISA_encoded.to_csv("data/PISA_encoded.csv")
@@ -158,11 +177,11 @@ PISA_prepared.to_csv("data/PISA_prepared.csv")
 
 #%% create boys and girls subsets for feature importance comparison
 
-# filter by gender (see how e.g. female is called after OneHotEncoding...)
-PISA_male = PISA_prepared[PISA_prepared["female"] == "0"] 
-PISA_female = PISA_prepared[PISA_prepared["female"] == "1"]
+# filter by gender (see which is which later...)
+PISA_sex_1 = PISA_prepared[PISA_prepared["ST004D01T_1.0"] == 0] 
+PISA_sex_2 = PISA_prepared[PISA_prepared["ST004D01T_1.0"] == 1]
 
 # save as csv
-PISA_male.to_csv("data/PISA_male.csv")
-PISA_female.to_csv("data/PISA_female.csv")
+PISA_sex_1.to_csv("data/PISA_sex_1.csv")
+PISA_sex_2.to_csv("data/PISA_sex_2.csv")
 

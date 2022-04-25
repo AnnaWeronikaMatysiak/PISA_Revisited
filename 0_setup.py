@@ -16,6 +16,7 @@ assert sklearn.__version__ >= "0.20"
 
 # Common imports
 import numpy as np
+import pandas as pd
 import os
 
 # set working directory
