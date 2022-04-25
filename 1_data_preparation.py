@@ -45,11 +45,13 @@ PISA_raw_100000 = PISA_raw.sample(100000)
 # save as csv
 PISA_raw_100000.to_csv("data/PISA_raw_100000.csv")
 
+# read in if needed
+PISA_raw_100000 = pd.read_csv("data/PISA_raw_100000.csv")
 
 #%% feature selection
 
 # create array with features to keep (read in column from excel doc)
-codebook = pd.read_excel('/Users/max.eckert/Documents/GitHub/PISA_Revisited/codebook/codebook_covariates_PISA.xlsx')
+codebook = pd.read_excel('codebook/codebook_covariates_PISA.xlsx')
 covariates = codebook.iloc[:,3]
 #transform to array, dropping SCHLTYPE and adding read_score so it doesn't get dropped
 covariates_array = covariates.to_numpy()
@@ -72,29 +74,52 @@ plt.ylabel('Number of Covariates')
 plt.title('Distribution of Missingness of Covariates',fontweight ="bold")
 plt.show()
 
+# save plot (0 axis???)
+save_fig("Distribution of Missingness of Covariates")
 
-#%% OneHotEncoding of categorical variables (book? 2nd chapter)
 
-# MAKE SURE COLUMN NAMES ARE GOOD -> look at book 2nd chapter
+#%% imputation (still change names)
+
+# type "pip install missingpy" in the console for installation
+from missingpy import MissForest
+
+X = PISA_selection
+
+imputer = MissForest(max_iter = 5, n_estimators = 25, max_features = 50, n_jobs = -1, random_state = 42)
+
+# cat_vars : int or array of ints containing column indices of categorical variable(s)
+cat_names = ['CNTRYID', 'ST004D01T',  'ST005Q01TA', 'ST007Q01TA', 'ST022Q01TA', 'IMMIG']
+
+def get_col_indices(df, names):
+    return df.columns.get_indexer(names)
+
+cat_indices = get_col_indices(PISA_selection, cat_names)
+
+# fit imputer
+imputer.fit(X, cat_vars = cat_indices)
+
+# apply imputer
+PISA_imputed = imputer.transform(X)
+
+# convert to pandas dataframe and add column names from before
+PISA_imputed = pd.DataFrame(PISA_imputed, columns = PISA_selection.columns)
+
+# save result as csv file (just as a backup)
+PISA_imputed.to_csv("data/PISA_imputed.csv")
+
+
+#%% OneHotEncoding of categorical variables
 
 # select categorical features
-PISA_cat = np.array(['country', 'home_language', 'immig', 'school_ownership', 'gender', 'mother_school', 'father_school'])
+# 'country', 'gender', 'mother_school', 'father_school', 'home_language', 'immig'
+# see variable cat_names
 
-
-"""# apply OneHotEncoder
+# transform categorical variables using OneHotEncoder and ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
-cat_encoder = OneHotEncoder()
-PISA_cat_1hot = cat_encoder.fit_transform(PISA_cat)
-"""
+from sklearn.compose import ColumnTransformer
 
-# -> merge somehow or replace in original data set OR
-
-# using a pipeline?
-"""from sklearn.compose import ColumnTransformer
-
-# LOOK INTO THIS AND TRY OUT WHEN WE HAVE DATA
-pipeline = ColumnTransformer("cat", OneHotEncoder, PISA_cat)
-PISA_encoded = pipeline.fit_transform(PISA)"""
+transformer = ColumnTransformer(transformers = [("cat", OneHotEncoder(), cat_names)], remainder = "passthrough")
+PISA_encoded = transformer.fit_transform(PISA_imputed)
 
 # save as csv
 PISA_encoded.to_csv("data/PISA_encoded.csv")
@@ -109,43 +134,23 @@ scaler = MinMaxScaler()
 # fit scaler
 scaler.fit(PISA_encoded)
 
-# scale data
-PISA_scaled = scaler.transform(PISA_encoded)
+# scale data (OneHot-variables stay the same, they are already between 0 and 1)
+PISA_prepared = scaler.transform(PISA_encoded)
 
-# convert to pandas dataframe AND ADD COLUMN NAMES FROM BEFORE!
-PISA_scaled = pd.DataFrame(PISA_scaled, columns = PISA_encoded.columns)
-
-# save result as csv file (just as a backup)
-PISA_scaled.to_csv("data/midterm_scaled.csv")
-
-
-#%% imputation (still change names)
-
-# type "pip install missingpy" in the console for installation
-from missingpy import MissForest
-
-X = PISA_scaled
-
-imputer = MissForest(max_iter = 5, n_estimators = 30, max_features = 80, n_jobs = -1, random_state = 42)
-
-# cat_vars : int or array of ints containing column indices of categorical variable(s)
-cat_vars = np.array(range(17)) # -> check if it is possible somehow with NAMES of columns to get indices
-
-# fit imputer
-imputer.fit(X, cat_vars = cat_vars)
-
-# apply imputer
-PISA_imputed = imputer.transform(X)
-
-# convert to pandas dataframe AND ADD COLUMN NAMES FROM BEFORE!
-PISA_imputed = pd.DataFrame(midterm_imputed, columns = midterm_reduced.columns)
+# convert to pandas dataframe and add column names from before
+PISA_prepared = pd.DataFrame(PISA_prepared, columns = PISA_encoded.columns)
 
 # save result as csv file (just as a backup)
-midterm_imputed.to_csv("data/midterm_imputed.csv")
+PISA_prepared.to_csv("data/PISA_prepared.csv")
 
 
-#%% create boys and girls subsets for later feature importance interpretation
+#%% create boys and girls subsets for feature importance comparison
 
-# filter by gender (see how it is called after OneHotEncoding!!!)
+# filter by gender (see how e.g. female is called after OneHotEncoding...)
+PISA_male = PISA_prepared[PISA_prepared["female"] == "0"] 
+PISA_female = PISA_prepared[PISA_prepared["female"] == "1"]
 
+# save as csv
+PISA_male.to_csv("data/PISA_male.csv")
+PISA_female.to_csv("data/PISA_female.csv")
 
