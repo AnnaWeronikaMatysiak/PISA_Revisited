@@ -48,9 +48,10 @@ PISA_raw_100000.to_csv("data/PISA_raw_100000.csv")
 # create array with features to keep (read in column from excel doc)
 codebook = pd.read_excel('/Users/max.eckert/Documents/GitHub/PISA_Revisited/codebook/codebook_covariates_PISA.xlsx')
 covariates = codebook.iloc[:,3]
-#transform to array
+#transform to array, dropping SCHLTYPE and adding read_score so it doesn't get dropped
 covariates_array = covariates.to_numpy()
 covariates_array_new = np.delete(covariates_array, 1)
+covariates_array_new = np.append(covariates_array_new, 'read_score')
 
 # select the features included in the array
 PISA_selection = PISA_raw_100000[covariates_array_new]
