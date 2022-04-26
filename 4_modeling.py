@@ -15,6 +15,7 @@ TO DO:
 - performance plots
 - add hyperparamether tuning
 - research pipeline and gride search
+- saving models
 """
 
 #%% necessary packages

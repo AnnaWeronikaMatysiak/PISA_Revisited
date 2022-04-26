@@ -30,9 +30,6 @@ from sklearn.metrics import mean_absolute_error
 #code to check if any of the columns have NAs:
 #y_train.isnull().any()
 
-#X_test = pd.read_csv("/My Drive/PISA_Revisited/data/X_test.csv") 
-#y_test = pd.read_csv("/My Drive/PISA_Revisited/data/y_test.csv")
-
 X_train = pd.read_csv("/My Drive/PISA_Revisited/data/X_train.csv")
 y_train = pd.read_csv("/My Drive/PISA_Revisited/data/y_train.csv")
 
