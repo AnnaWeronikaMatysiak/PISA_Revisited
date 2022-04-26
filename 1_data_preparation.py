@@ -129,13 +129,11 @@ from sklearn.compose import ColumnTransformer
 
 # select non-binary categorical features
 # 'country', 'mother_school', 'father_school', 'home_language', 'immig'
-non_binary_cat = ['CNTRYID',  'ST005Q01TA', 'ST007Q01TA', 'ST022Q01TA', 'IMMIG']
+non_binary_cat = ['CNTRYID', 'ST005Q01TA', 'ST007Q01TA', 'ST022Q01TA', 'IMMIG']
 
 # transform categorical variables (this did not work when using the get_feature_names method afterwards...)
 # transformer = ColumnTransformer(transformers = [("cat", encoder, non_binary_cat)], remainder = "passthrough")
 # PISA_encoded = transformer.fit_transform(PISA_imputed)
-
-from category_encoders.one_hot import OneHotEncoder
 
 # create df with categorical features
 cat_df = PISA_imputed[non_binary_cat]
@@ -171,6 +169,9 @@ PISA_prepared = scaler.transform(PISA_encoded)
 # convert to pandas dataframe and add column names from before
 PISA_prepared = pd.DataFrame(PISA_prepared, columns = PISA_encoded.columns)
 
+# drop first column that was generated before
+PISA_prepared = PISA_prepared.iloc[: , 1:]
+
 # save result as csv file (just as a backup)
 PISA_prepared.to_csv("data/PISA_prepared.csv")
 
@@ -178,8 +179,8 @@ PISA_prepared.to_csv("data/PISA_prepared.csv")
 #%% create boys and girls subsets for feature importance comparison
 
 # filter by gender (see which is which later...)
-PISA_sex_1 = PISA_prepared[PISA_prepared["ST004D01T_1.0"] == 0] 
-PISA_sex_2 = PISA_prepared[PISA_prepared["ST004D01T_1.0"] == 1]
+PISA_sex_1 = PISA_prepared[PISA_prepared["ST004D01T"] == 0] 
+PISA_sex_2 = PISA_prepared[PISA_prepared["ST004D01T"] == 1]
 
 # save as csv
 PISA_sex_1.to_csv("data/PISA_sex_1.csv")
