@@ -8,6 +8,7 @@ Created on Thu Mar 31 15:14:00 2022
 """
 TO DO:
 - visualisation of error measures
+- save the model somehow if needed (pipeline for evaluation?)
 """
 
 #%% call setup file
@@ -54,10 +55,9 @@ lin_reg.intercept_
 y_predicted=lin_reg.predict(X_val_1)
 
 #evaluation
-mse = mean_squared_error(y_val_1, y_predicted)
 rmse= np.sqrt(mean_squared_error(y_val_1, y_predicted))
 mae= mean_absolute_error(y_val_1, y_predicted)
-print('MSE_linear: ',mse)
+
 print('RMSE_linear: ',rmse)
 print('MAE_linear: ', mae)
 

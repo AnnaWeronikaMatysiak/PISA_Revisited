@@ -128,8 +128,8 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 
 # select non-binary categorical features
-# 'country', 'gender', 'mother_school', 'father_school', 'home_language', 'immig'
-non_binary_cat = ['CNTRYID', 'ST004D01T',  'ST005Q01TA', 'ST007Q01TA', 'ST022Q01TA', 'IMMIG']
+# 'country', 'mother_school', 'father_school', 'home_language', 'immig'
+non_binary_cat = ['CNTRYID',  'ST005Q01TA', 'ST007Q01TA', 'ST022Q01TA', 'IMMIG']
 
 # transform categorical variables (this did not work when using the get_feature_names method afterwards...)
 # transformer = ColumnTransformer(transformers = [("cat", encoder, non_binary_cat)], remainder = "passthrough")
