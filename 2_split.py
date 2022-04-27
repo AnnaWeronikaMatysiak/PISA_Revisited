@@ -29,6 +29,9 @@ from sklearn.model_selection import train_test_split
 # taken from file 1, but still missing imputing and normalization -> see file 1.1 and 1.2
 PISA_prepared = pd.read_csv("data/PISA_prepared.csv")
 
+# drop first column that was automatically generated during saving if needed
+#PISA_prepared.drop(PISA_prepared.columns[[0]], axis = 1, inplace = True)
+
 #%% split
 
 X = PISA_prepared.drop(columns=["read_score"])

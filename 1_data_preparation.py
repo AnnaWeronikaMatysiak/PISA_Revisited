@@ -125,7 +125,6 @@ PISA_imputed = pd.read_csv("data/PISA_imputed.csv")
 
 # transform categorical variables using OneHotEncoder and ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.compose import ColumnTransformer
 
 # select non-binary categorical features
 # 'country', 'mother_school', 'father_school', 'home_language', 'immig'
@@ -153,36 +152,55 @@ PISA_encoded = pd.concat([num_df, encoded_df], axis=1)
 # save as csv
 PISA_encoded.to_csv("data/PISA_encoded.csv")
 
+# read in if needed
+PISA_encoded = pd.read_csv("data/PISA_encoded.csv")
+
 #%% normalization
+
+# move column "read_score" (target variable) to the end of the dataframe
+temp_cols = PISA_encoded.columns.tolist()
+index = PISA_encoded.columns.get_loc("read_score")
+new_cols = temp_cols[0:index] + temp_cols[index+1:] + temp_cols[index:index+1]
+PISA_encoded = PISA_encoded[new_cols]
 
 # MinMaxScaler normalizes the data
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.compose import ColumnTransformer
 
 scaler = MinMaxScaler()
 
 # fit scaler
-scaler.fit(PISA_encoded)
+scaler.fit(PISA_encoded.loc[ : , PISA_encoded.columns != 'read_score'])
 
-# scale data (OneHot-variables stay the same, they are already between 0 and 1)
-PISA_prepared = scaler.transform(PISA_encoded)
+# choose all columns except of read_score (target) to be normalized
+# OneHotEncoded columns don't change by applying MinMaxScaler
+covar = PISA_encoded.loc[ : , PISA_encoded.columns != 'read_score'].columns
+
+transformer = ColumnTransformer(transformers = [("norm", scaler, covar)], remainder = "passthrough")
+PISA_prepared = transformer.fit_transform(PISA_encoded)
 
 # convert to pandas dataframe and add column names from before
 PISA_prepared = pd.DataFrame(PISA_prepared, columns = PISA_encoded.columns)
 
-# drop first column that was generated before
-PISA_prepared = PISA_prepared.iloc[: , 1:]
+# drop first two columns that were unneccessarily generated during processing
+PISA_prepared.drop(PISA_prepared.columns[[0, 1]], axis = 1, inplace = True)
+
+# rename gender column for further observations
+PISA_prepared.rename(columns = {'ST004D01T':'gender'}, inplace = True)
 
 # save result as csv file (just as a backup)
 PISA_prepared.to_csv("data/PISA_prepared.csv")
+
+# PISA_prepared = pd.read_csv("data/PISA_prepared.csv")
 
 
 #%% create boys and girls subsets for feature importance comparison
 
 # filter by gender (see which is which later...)
-PISA_sex_1 = PISA_prepared[PISA_prepared["ST004D01T"] == 0] 
-PISA_sex_2 = PISA_prepared[PISA_prepared["ST004D01T"] == 1]
+PISA_female = PISA_prepared[PISA_prepared["gender"] == 0] 
+PISA_male = PISA_prepared[PISA_prepared["gender"] == 1]
 
 # save as csv
-PISA_sex_1.to_csv("data/PISA_sex_1.csv")
-PISA_sex_2.to_csv("data/PISA_sex_2.csv")
+PISA_female.to_csv("data/PISA_female.csv")
+PISA_male.to_csv("data/PISA_male.csv")
 
