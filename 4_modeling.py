@@ -26,6 +26,7 @@ Max/together:
 - performance plots
 - evaluate on the test
 - present the 10 best predictors of the best model
+- if we have time: combine models in an ensemble (like in the lab)
 """
 
 #%% necessary packages
@@ -52,14 +53,25 @@ runpy.run_path(path_name = '/0_setup.py')
 #X_test = pd.read_csv("/My Drive/PISA_Revisited/data/X_test.csv") 
 #y_test = pd.read_csv("/My Drive/PISA_Revisited/data/y_test.csv")
 
-X_train = pd.read_csv("/My Drive/PISA_Revisited/data/X_train.csv")
-y_train = pd.read_csv("/My Drive/PISA_Revisited/data/y_train.csv")
+X_train = pd.read_csv("data/X_train.csv")
+y_train = pd.read_csv("data/y_train.csv")
 
-X_val_1 = pd.read_csv("/My Drive/PISA_Revisited/data/X_val_1.csv") 
-y_val_1 = pd.read_csv("/My Drive/PISA_Revisited/data/y_val_1.csv")
+X_val_1 = pd.read_csv("data/X_val_1.csv") 
+y_val_1 = pd.read_csv("data/y_val_1.csv")
 
-X_val_2 = pd.read_csv("/My Drive/PISA_Revisited/data/X_val_2.csv") 
-y_val_2 = pd.read_csv("/My Drive/PISA_Revisited/data/y_val_2.csv")
+X_val_2 = pd.read_csv("data/X_val_2.csv") 
+y_val_2 = pd.read_csv("data/y_val_2.csv")
+
+# if needed, drop first column that was automatically generated 
+# -> dimensions should be 205 columns in X and 1 in y
+def 
+
+X_train.drop(PISA_prepared.columns[[0, 1]], axis = 1, inplace = True)
+y_train = X_train.iloc[: , 1:]
+X_val_1 = X_train.iloc[: , 1:]
+y_val_1 = X_train.iloc[: , 1:]
+X_val_2 = X_train.iloc[: , 1:]
+y_val_2 = X_train.iloc[: , 1:]
 
 #%% ridge regression
 # in case we need to scale it:
@@ -125,13 +137,69 @@ poly_reg_w_ridge.intercept_
 
 from sklearn.ensemble import RandomForestRegressor
 
-rnd_rgr =  RandomForestRegressor(n_estimators = 100, max_leaf_nodes = 10, max_features = 1.0, max_samples = 1.0, n_jobs = -1)
-
-# for the whole training set, only using 10% of features and 10% of observations for each try
-# rnd_rgr =  RandomForestRegressor(n_estimators = 100, max_leaf_nodes = 10, max_features = 0.2, max_samples = 1.0, n_jobs = -1)
+forest_reg =  RandomForestRegressor()
 
 # fit the model to our training data
-rnd_rgr.fit(X_train, y_train)
+forest_reg.fit(X_train, y_train)
 
-#%% extra trees
+# prediction for X_val_1 (not needed because this is done during cross validation)
+# predicted_forest = forest_reg.predict(X_val_1)
 
+# compute cross validation scores
+from sklearn.model_selection import cross_val_score
+scores = cross_val_score(forest_reg, X_val_1, y_val_1, scoring = "neg_root_mean_squared_error", cv = 5) # scoring = ???
+forest_rmse_scores = np.sqrt(-scores)
+
+def display_scores(scores):
+    print("Scores:", scores)
+    print("Mean:", scores.mean())
+    print("Standard deviation:", scores.std())
+
+#forest_mse = mean_squared_error(y_val_1, y_pred)
+#print(forest_reg_mse)
+
+display_scores(forest_rmse_scores)
+
+# saves the model 
+import joblib
+joblib.dump(forest_reg, "/models/RandomForests.pkl")
+
+#loads the model
+#baseline_loaded=joblib.load("RandomForests.pkl")
+
+
+#%% ExtraTrees (Extremely Randomized Trees)
+
+# trades more bias for a lower variance, much faster to train than RandomForests
+
+from sklearn.ensemble import ExtraTreesRegressor
+
+extra_reg =  ExtraTreesRegressor()
+
+# fit the model to our training data
+extra_reg.fit(X_train, y_train)
+
+# prediction for X_val_1 (not needed because this is done during cross validation)
+# predicted_forest = forest_reg.predict(X_val_1)
+
+# compute cross validation scores
+from sklearn.model_selection import cross_val_score
+scores = cross_val_score(extra_reg, X_val_1, y_val_1, scoring = "neg_root_mean_squared_error", cv = 5) # scoring = ???
+extra_rmse_scores = np.sqrt(-scores)
+
+def display_scores(scores):
+    print("Scores:", scores)
+    print("Mean:", scores.mean())
+    print("Standard deviation:", scores.std())
+
+#forest_mse = mean_squared_error(y_val_1, y_pred)
+#print(forest_reg_mse)
+
+display_scores(extra_rmse_scores)
+
+# saves the model 
+import joblib
+joblib.dump(extra_reg, "/models/ExtraTrees.pkl")
+
+#loads the model
+#baseline_loaded=joblib.load("ExtraTrees.pkl")
