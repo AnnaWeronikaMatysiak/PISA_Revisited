@@ -64,14 +64,15 @@ y_val_2 = pd.read_csv("data/y_val_2.csv")
 
 # if needed, drop first column that was automatically generated 
 # -> dimensions should be 205 columns in X and 1 in y
-def 
+def drop_first_entry(df):
+    df.drop(df.columns[[0]], axis = 1, inplace = True)
 
-X_train.drop(PISA_prepared.columns[[0, 1]], axis = 1, inplace = True)
-y_train = X_train.iloc[: , 1:]
-X_val_1 = X_train.iloc[: , 1:]
-y_val_1 = X_train.iloc[: , 1:]
-X_val_2 = X_train.iloc[: , 1:]
-y_val_2 = X_train.iloc[: , 1:]
+drop_first_entry(X_train)
+drop_first_entry(y_train)
+drop_first_entry(X_val_1)
+drop_first_entry(y_val_1)
+drop_first_entry(X_val_2)
+drop_first_entry(y_val_2)
 
 #%% ridge regression
 # in case we need to scale it:
@@ -91,8 +92,8 @@ ridge_reg_model.alpha_
 rmse_ridge= np.sqrt(mean_squared_error(y_val_1, predicted_ridge))
 mae_ridge=mean_absolute_error(y_val_1, predicted_ridge)
 
-print('RMSE_ridge: ',rmse_ridge)
-print('MAE_ridge: ', mae_ridge)
+# print('RMSE_ridge: ',rmse_ridge)
+# print('MAE_ridge: ', mae_ridge)
 
 
 #%% polynomial transformations 
@@ -110,15 +111,16 @@ X_poly_3 = poly_features.fit_transform(X_train)
 from sklearn.linear_model import Ridge
 #triaing two models 
 poly_reg_w_ridge = Ridge()
-poly_reg_w_ridge.fit(X_poly_2, y_train)   
+poly_reg_w_ridge.fit(X_poly_2, y_train) 
 
+# CV  
 
 poly_reg_w_ridge_3= Ridge()
 poly_reg_w_ridge_3.fit(X_poly_3, y_train)
 
+# CV
 
-
-#grid search - alphas fro ridge and degrees fro polynomial
+#grid search - alphas fro ridge and degrees fro polynomial -> in the next file
 
 #%% Random Forest Regressor - to be continued
 
@@ -134,7 +136,7 @@ forest_reg.fit(X_train, y_train)
 
 # compute cross validation scores
 from sklearn.model_selection import cross_val_score
-scores = cross_val_score(forest_reg, X_val_1, y_val_1, scoring = "neg_root_mean_squared_error", cv = 5) # scoring = ???
+scores = cross_val_score(forest_reg, X_val_1, y_val_1, scoring = "neg_root_mean_squared_error", cv = 5) 
 forest_rmse_scores = np.sqrt(-scores)
 
 def display_scores(scores):
@@ -149,10 +151,10 @@ display_scores(forest_rmse_scores)
 
 # saves the model 
 import joblib
-joblib.dump(forest_reg, "/models/RandomForests.pkl")
+joblib.dump(forest_reg, "models/RandomForests.pkl")
 
-#loads the model
-#baseline_loaded=joblib.load("RandomForests.pkl")
+# load the model if needed
+# baseline_loaded=joblib.load("RandomForests.pkl")
 
 
 #%% ExtraTrees (Extremely Randomized Trees)
@@ -174,19 +176,14 @@ from sklearn.model_selection import cross_val_score
 scores = cross_val_score(extra_reg, X_val_1, y_val_1, scoring = "neg_root_mean_squared_error", cv = 5) # scoring = ???
 extra_rmse_scores = np.sqrt(-scores)
 
-def display_scores(scores):
-    print("Scores:", scores)
-    print("Mean:", scores.mean())
-    print("Standard deviation:", scores.std())
-
-#forest_mse = mean_squared_error(y_val_1, y_pred)
-#print(forest_reg_mse)
+# forest_mse = mean_squared_error(y_val_1, y_pred)
+# print(forest_reg_mse)
 
 display_scores(extra_rmse_scores)
 
 # saves the model 
 import joblib
-joblib.dump(extra_reg, "/models/ExtraTrees.pkl")
+joblib.dump(extra_reg, "models/ExtraTrees.pkl")
 
-#loads the model
-#baseline_loaded=joblib.load("ExtraTrees.pkl")
+# load the model if needed
+# baseline_loaded=joblib.load("ExtraTrees.pkl")
