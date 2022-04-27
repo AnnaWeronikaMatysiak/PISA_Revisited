@@ -59,12 +59,13 @@ mae= mean_absolute_error(y_val_1, y_predicted)
 print('RMSE_linear: ',rmse)
 print('MAE_linear: ', mae)
 
-# saves the model 
+
+# saving
 import joblib
 
 joblib.dump(lin_reg, "/models/baseline.pkl")
 
-#loads the model
-#baseline_loaded=joblib.load("baseline.pkl")
+#loading
+#baseline_loaded=joblib.load("/models/baseline.pkl")
 
 

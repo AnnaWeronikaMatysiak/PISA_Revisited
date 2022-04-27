@@ -14,7 +14,7 @@ Ania:
 - research pipeline and gride search
 - saving models
 - add rmse to all
-- sd to basseline
+
 
 Johanna:
 - add extra trees with evalautions
@@ -88,48 +88,35 @@ predicted_ridge=ridge_reg.predict(X_val_1)
 
 #to check which alpha was used
 ridge_reg_model.alpha_
-mse_ridge = mean_squared_error(y_val_1, predicted_ridge)
 rmse_ridge= np.sqrt(mean_squared_error(y_val_1, predicted_ridge))
 mae_ridge=mean_absolute_error(y_val_1, predicted_ridge)
 
-print('MSE_ridge: ',mse_ridge)
 print('RMSE_ridge: ',rmse_ridge)
 print('MAE_ridge: ', mae_ridge)
 
 
-#%% polynomial regressions degree=2
+#%% polynomial transformations 
 
-#train
+# degree 2
 poly_features = PolynomialFeatures(degree=2, include_bias=False)
-X_poly = poly_features.fit_transform(X_train)
+X_poly_2 = poly_features.fit_transform(X_train)
 
-lin_reg_pol = LinearRegression()
-lin_reg_pol.fit(X_poly, y_train)
-lin_reg_pol.intercept_, lin_reg_pol.coef_
-
-#test
-validation_X_poly = poly_features.fit_transform(X_val_1)
-validation_y_poly = lin_reg_pol.predict(validation_X_poly)
-
-#evaluation
-mse_poly = mean_squared_error(y_val_1,validation_y_poly)
-rmse_poly= np.sqrt(mean_squared_error(y_val_1, validation_y_poly))
-mae_poly = mean_absolute_error(y_val_1,validation_y_poly)
-r2_poly=r2_score(y_val_1,validation_y_poly)
-
-print('MSE_polynomial: ',mse_poly)
-print('RMSE_polynomial: ',rmse_poly)
-print('MAE_polynomial: ', mae_poly)
-print('R2_polynomial: ',r2_poly)
+#degree 3
+poly_features = PolynomialFeatures(degree=3, include_bias=False)
+X_poly_3 = poly_features.fit_transform(X_train)
 
 
 #%% polynomial regression with ridge regularisation - to be continued
 from sklearn.linear_model import Ridge
+#triaing two models 
 poly_reg_w_ridge = Ridge()
-poly_reg_w_ridge.fit(X_poly, y_train)   
+poly_reg_w_ridge.fit(X_poly_2, y_train)   
 
-poly_reg_w_ridge.coef_
-poly_reg_w_ridge.intercept_
+
+poly_reg_w_ridge_3= Ridge()
+poly_reg_w_ridge_3.fit(X_poly_3, y_train)
+
+
 
 #grid search - alphas fro ridge and degrees fro polynomial
 
