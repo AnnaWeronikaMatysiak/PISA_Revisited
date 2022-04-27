@@ -7,15 +7,25 @@ Created on Thu Apr  7 13:31:29 2022
 """
 
 """
-TO DO:
+TO DO - for both files 4 and 5: (different order)
+Ania:
 - polynomial regression with ridge penalty  - add evaluations
-- add extra trees with evalautions
-- work on the decision trees
-- apply evaluation structure from the lab 8.
-- performance plots
-- add hyperparamether tuning
+- apply evaluation structure from the lab 8., cross-validation (p.73)
 - research pipeline and gride search
 - saving models
+- add rmse to all
+- sd to basseline
+
+Johanna:
+- add extra trees with evalautions
+- work on the random forest
+- saving models
+-grid search for the trees (with val_2, CV is automaticallz implemented)
+
+Max/together:
+- performance plots
+- evaluate on the test
+- present the 10 best predictors of the best model
 """
 
 #%% necessary packages

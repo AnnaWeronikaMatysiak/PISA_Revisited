@@ -9,6 +9,7 @@ Created on Thu Mar 31 15:14:00 2022
 TO DO:
 - visualisation of error measures
 - save the model somehow if needed (pipeline for evaluation?)
+- sd
 """
 
 #%% call setup file
@@ -57,4 +58,13 @@ mae= mean_absolute_error(y_val_1, y_predicted)
 
 print('RMSE_linear: ',rmse)
 print('MAE_linear: ', mae)
+
+# saves the model 
+import joblib
+
+joblib.dump(lin_reg, "/models/baseline.pkl")
+
+#loads the model
+#baseline_loaded=joblib.load("baseline.pkl")
+
 
