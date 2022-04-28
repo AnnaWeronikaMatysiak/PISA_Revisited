@@ -31,7 +31,7 @@ import pandas as pd
 
 #%% read in data
 
-PISA_raw = pd.read_csv("/Volumes/GoogleDrive/My Drive/PISA_Revisited/data/PISA_student_data.csv")
+PISA_raw = pd.read_csv("/data/PISA_student_data.csv")
 
 # rename target variable "PV1READ" = "read_score"
 PISA_raw.rename(columns = {'PV1READ':'read_score'}, inplace = True)

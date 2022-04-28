@@ -32,15 +32,15 @@ Max/together:
 #%% necessary packages
 
 import pandas as pd
-#from sklearn.linear_model import Ridge
-from sklearn.linear_model import RidgeCV
+import numpy as np
+import joblib
 from sklearn.metrics import r2_score
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import mean_absolute_error
-from sklearn.linear_model import LinearRegression
-import numpy as np
-
+from sklearn.linear_model import Ridge
+from sklearn.linear_model import RidgeCV
+from sklearn.model_selection import GridSearchCV
 #%% call setup file
 import runpy
 runpy.run_path(path_name = '/0_setup.py')
@@ -92,11 +92,11 @@ ridge_reg_model.alpha_
 rmse_ridge= np.sqrt(mean_squared_error(y_val_1, predicted_ridge))
 mae_ridge=mean_absolute_error(y_val_1, predicted_ridge)
 
-# print('RMSE_ridge: ',rmse_ridge)
-# print('MAE_ridge: ', mae_ridge)
+print('RMSE_ridge: ',rmse_ridge)
+print('MAE_ridge: ', mae_ridge)
 
 
-#%% polynomial transformations 
+#%% polynomial transformation of independent variables
 
 # degree 2
 poly_features = PolynomialFeatures(degree=2, include_bias=False)
@@ -107,20 +107,85 @@ poly_features = PolynomialFeatures(degree=3, include_bias=False)
 X_poly_3 = poly_features.fit_transform(X_train)
 
 
-#%% polynomial regression with ridge regularisation - to be continued
-from sklearn.linear_model import Ridge
-#triaing two models 
+#%% polynomial regression with ridge regularisation - degree 2
+
+#training model
 poly_reg_w_ridge = Ridge()
 poly_reg_w_ridge.fit(X_poly_2, y_train) 
 
-# CV  
+#predicting outcome
+y_predicted_poly_2 = poly_reg_w_ridge.predict(X_val_1)
 
+# evaluation
+rmse_poly2= np.sqrt(mean_squared_error(y_val_1, y_predicted_poly_2))
+mae_poly2= mean_absolute_error(y_val_1, y_predicted_poly_2)
+
+
+r2_poly2= r2_score(y_val_1,y_predicted_poly_2)
+
+print('RMSE_ridge_poly_2: ',rmse_poly2)
+print('MAE_ridge_poly_2: ', mae_poly2)
+print ('R2_ridge_poly2:', r2_poly2)
+
+# saving the baseline model
+joblib.dump(poly_reg_w_ridge, "/models/poly_reg_w_ridge.pkl")
+
+#loading if needed
+#poly_reg_w_ridge_loaded=joblib.load("/models/poly_reg_w_ridge.pkl")
+
+# comparing parameters - definitions
+param = {
+    'alpha':[.0001, 0.001,0.01, 0.01,1],
+    'fit_intercept':[True,False],
+    'normalize':[True,False],
+'solver':['auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']
+       }
+# search
+search = GridSearchCV(poly_reg_w_ridge, param, scoring='rmse', n_jobs=-1, cv=X_val_1)
+result = search.fit(X_poly_2, y_train)
+
+# summarize result
+print('Best Score: %s' % result.best_score_)
+print('Best Hyperparameters: %s' % result.best_params_)
+
+#%% polynomial regression with ridge regularisation - degree 3
 poly_reg_w_ridge_3= Ridge()
 poly_reg_w_ridge_3.fit(X_poly_3, y_train)
 
-# CV
+y_predicted_poly_3 = poly_reg_w_ridge_3.predict(X_val_1)
 
-#grid search - alphas fro ridge and degrees fro polynomial -> in the next file
+# evaluation
+rmse_poly3= np.sqrt(mean_squared_error(y_val_1, y_predicted_poly_3))
+mae_poly3= mean_absolute_error(y_val_1, y_predicted_poly_3)
+
+
+r2_poly3= r2_score(y_val_1,y_predicted_poly_3)
+
+print('RMSE_ridge_poly_2: ',rmse_poly3)
+print('MAE_ridge_poly_2: ', mae_poly3)
+print ('R2_ridge_poly2:', r2_poly3)
+
+# saving the model
+joblib.dump(poly_reg_w_ridge_3, "/models/poly_reg_w_ridge_3.pkl")
+
+#loading if needed
+#poly_reg_w_ridge_3_loaded=joblib.load("/models/poly_reg_w_ridge_3.pkl")
+
+# comparing parameters - definitions
+
+param = {
+    'alpha':[.0001, 0.001,0.01, 0.01,1],
+    'fit_intercept':[True,False],
+    'normalize':[True,False],
+'solver':['auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']
+       }
+# search
+search = GridSearchCV(poly_reg_w_ridge_3, param, scoring='rmse', n_jobs=-1, cv=X_val_1)
+result = search.fit(X_poly_3, y_train)
+
+# summarize result
+print('Best Score: %s' % result.best_score_)
+print('Best Hyperparameters: %s' % result.best_params_)
 
 #%% Random Forest Regressor
 
@@ -151,10 +216,10 @@ display_scores(forest_rmse_scores)
 
 # saves the model 
 import joblib
-joblib.dump(forest_reg, "models/RandomForests.pkl")
+joblib.dump(forest_reg, "/models/RandomForests.pkl")
 
 # load the model if needed
-# baseline_loaded=joblib.load("RandomForests.pkl")
+# RandomForest_loaded=joblib.load("/models/RandomForests.pkl")
 
 
 #%% ExtraTrees (Extremely Randomized Trees)
@@ -183,7 +248,7 @@ display_scores(extra_rmse_scores)
 
 # saves the model 
 import joblib
-joblib.dump(extra_reg, "models/ExtraTrees.pkl")
+joblib.dump(extra_reg, "/models/ExtraTrees.pkl")
 
 # load the model if needed
-# baseline_loaded=joblib.load("ExtraTrees.pkl")
+# ExtraTreers_loaded=joblib.load("models/ExtraTrees.pkl")
