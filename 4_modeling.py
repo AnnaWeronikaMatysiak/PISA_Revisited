@@ -96,10 +96,6 @@ mae_ridge=mean_absolute_error(y_val_1, predicted_ridge)
 print('RMSE_ridge: ',rmse_ridge)
 print('MAE_ridge: ', mae_ridge)
 
-#adding values to table
-d2 = {'Model': ['Baseline: Linear Regression','Ridge Regression'], 'RMSE': [round(rmse, 4), round(rmse_ridge, 4)], 'MAE': [round(mae, 4), round(mae_ridge, 4)]}
-table_model_comparison = pd.DataFrame(data=d2)
-table_model_comparison
 
 #%% polynomial transformation of independent variables
 
@@ -244,7 +240,7 @@ extra_reg.fit(X_train, y_train)
 
 # compute cross validation scores
 from sklearn.model_selection import cross_val_score
-scores = cross_val_score(extra_reg, X_val_1, y_val_1, scoring = "neg_root_mean_squared_error", cv = 5) # scoring = ???
+scores = cross_val_score(extra_reg, X_val_1, y_val_1, scoring = "neg_root_mean_squared_error", cv = 5)
 extra_rmse_scores = np.sqrt(-scores)
 
 # forest_mse = mean_squared_error(y_val_1, y_pred)
@@ -257,12 +253,4 @@ import joblib
 joblib.dump(extra_reg, "models/ExtraTrees.pkl")
 
 # load the model if needed
-# ExtraTreers_loaded=joblib.load("models/ExtraTrees.pkl")
-
-#%%DRAFT: Creating table with covariates and their coefficients
-feature_cols = X_train.columns
-lin_reg_coef_list = lin_reg.coef_.tolist()
-len(feature_cols)
-len(lin_reg_coef_list)
-
-covar_coef = pd.DataFrame({'covariates': feature_cols, 'coefficients': [lin_reg.coef_]})
+ExtraTrees_loaded=joblib.load("models/ExtraTrees.pkl")

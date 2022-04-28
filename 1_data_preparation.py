@@ -204,3 +204,24 @@ PISA_male = PISA_prepared[PISA_prepared["gender"] == 1]
 PISA_female.to_csv("data/PISA_female.csv")
 PISA_male.to_csv("data/PISA_male.csv")
 
+# drop first entries if needed
+drop_first_entry(PISA_female)
+drop_first_entry(PISA_male)
+
+# split gender subsets
+X_female = PISA_female.drop(columns=["read_score"])
+y_female = PISA_female["read_score"]
+y_female = y_female.to_frame()
+
+X_male = PISA_male.drop(columns=["read_score"])
+y_male = PISA_male["read_score"]
+y_male = y_male.to_frame()
+
+# save as csv
+X_female.to_csv("data/X_female.csv")
+y_female.to_csv("data/y_female.csv")
+
+X_male.to_csv("data/X_male.csv")
+y_male.to_csv("data/y_male.csv")
+
+

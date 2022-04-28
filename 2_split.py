@@ -53,5 +53,3 @@ X_val_1.to_csv("data/X_val_1.csv") # 10000
 y_val_1.to_csv("data/y_val_1.csv")
 X_val_2.to_csv("data/X_val_2.csv") # 10000
 y_val_2.to_csv("data/y_val_2.csv")
-
-
