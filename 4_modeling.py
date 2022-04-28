@@ -41,7 +41,7 @@ from sklearn.metrics import mean_absolute_error
 from sklearn.linear_model import Ridge
 from sklearn.linear_model import RidgeCV
 from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import RepeatedKFold
+
 #%% call setup file
 import runpy
 runpy.run_path(path_name = '/0_setup.py')
@@ -142,27 +142,25 @@ param = {
 'solver':['auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']
        }
 # search
-cv = RepeatedKFold(n_splits=10, n_repeats=3, random_state=1)
-search = GridSearchCV(poly_reg_w_ridge, param, scoring='neg_mean_absolute_error', n_jobs=-1, cv=cv)
+search = GridSearchCV(poly_reg_w_ridge, param, scoring='rmse', n_jobs=-1, cv=X_val_1)
 result = search.fit(X_poly_2, y_train)
 
 # summarize result
 print('Best Score: %s' % result.best_score_)
 print('Best Hyperparameters: %s' % result.best_params_)
 
-#model with selected parameters
-#.Ridge(alpha=1.0, fit_intercept=True, normalize=True,solver='auto')
-
 #%% polynomial regression with ridge regularisation - degree 3
+
 poly_reg_w_ridge_3= Ridge()
 poly_reg_w_ridge_3.fit(X_poly_3, y_train)
 
-#predictions
 y_predicted_poly_3 = poly_reg_w_ridge_3.predict(X_val_1)
 
 # evaluation
 rmse_poly3= np.sqrt(mean_squared_error(y_val_1, y_predicted_poly_3))
 mae_poly3= mean_absolute_error(y_val_1, y_predicted_poly_3)
+
+
 r2_poly3= r2_score(y_val_1,y_predicted_poly_3)
 
 print('RMSE_ridge_poly_2: ',rmse_poly3)
@@ -184,16 +182,12 @@ param = {
 'solver':['auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']
        }
 # search
-cv = RepeatedKFold(n_splits=10, n_repeats=3, random_state=1)
-search = GridSearchCV(poly_reg_w_ridge_3, param, scoring='neg_mean_absolute_error', n_jobs=-1, cv=cv)
+search = GridSearchCV(poly_reg_w_ridge_3, param, scoring='rmse', n_jobs=-1, cv=X_val_1)
 result = search.fit(X_poly_3, y_train)
 
 # summarize result
 print('Best Score: %s' % result.best_score_)
 print('Best Hyperparameters: %s' % result.best_params_)
-
-#model with selected parameters
-#.Ridge(alpha=1.0, fit_intercept=True, normalize=True,solver='auto')
 
 #%% Random Forest Regressor
 
@@ -217,17 +211,17 @@ def display_scores(scores):
     print("Mean:", scores.mean())
     print("Standard deviation:", scores.std())
 
-#forest_mse = mean_squared_error(y_val_1, y_pred)
-#print(forest_reg_mse)
+# forest_mse = mean_squared_error(y_val_1, y_pred)
+# print(forest_reg_mse)
 
 display_scores(forest_rmse_scores)
 
 # saves the model 
 import joblib
-joblib.dump(forest_reg, "/models/RandomForests.pkl")
+joblib.dump(forest_reg, "models/RandomForests.pkl")
 
 # load the model if needed
-# RandomForest_loaded=joblib.load("/models/RandomForests.pkl")
+RandomForest_loaded=joblib.load("models/RandomForests.pkl")
 
 
 #%% ExtraTrees (Extremely Randomized Trees)
@@ -256,7 +250,7 @@ display_scores(extra_rmse_scores)
 
 # saves the model 
 import joblib
-joblib.dump(extra_reg, "/models/ExtraTrees.pkl")
+joblib.dump(extra_reg, "models/ExtraTrees.pkl")
 
 # load the model if needed
 # ExtraTreers_loaded=joblib.load("models/ExtraTrees.pkl")
