@@ -122,7 +122,7 @@ poly_reg_w_ridge_3.fit(X_poly_3, y_train)
 
 #grid search - alphas fro ridge and degrees fro polynomial -> in the next file
 
-#%% Random Forest Regressor - to be continued
+#%% Random Forest Regressor
 
 from sklearn.ensemble import RandomForestRegressor
 

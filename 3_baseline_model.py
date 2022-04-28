@@ -31,14 +31,15 @@ from sklearn.metrics import mean_absolute_error
 #code to check if any of the columns have NAs:
 #y_train.isnull().any()
 
-X_train = pd.read_csv("/My Drive/PISA_Revisited/data/X_train.csv")
-y_train = pd.read_csv("/My Drive/PISA_Revisited/data/y_train.csv")
+X_train = pd.read_csv("data/X_train.csv")
+y_train = pd.read_csv("data/y_train.csv")
 
-X_val_1 = pd.read_csv("/My Drive/PISA_Revisited/data/X_val_1.csv") 
-y_val_1 = pd.read_csv("/My Drive/PISA_Revisited/data/y_val_1.csv")
+X_val_1 = pd.read_csv("data/X_val_1.csv") 
+y_val_1 = pd.read_csv("data/y_val_1.csv")
 
-X_val_2 = pd.read_csv("/My Drive/PISA_Revisited/data/X_val_2.csv") 
-y_val_2 = pd.read_csv("/My Drive/PISA_Revisited/data/y_val_2.csv")
+X_val_2 = pd.read_csv("data/X_val_2.csv") 
+y_val_2 = pd.read_csv("data/y_val_2.csv")
+
 
 #%% linear regression
 
