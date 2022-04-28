@@ -60,6 +60,10 @@ mae= mean_absolute_error(y_val_1, y_predicted)
 print('RMSE_linear: ',rmse)
 print('MAE_linear: ', mae)
 
+#%%Saving Baseline Metrics in Table
+d = {'Model': ['Baseline: Linear Regression'], 'RMSE': [round(rmse, 4)], 'MAE': [round(mae, 4)]}
+table_baseline = pd.DataFrame(data=d)
+table_baseline
 
 # saving
 import joblib
@@ -70,3 +74,5 @@ joblib.dump(lin_reg, "/models/baseline.pkl")
 #baseline_loaded=joblib.load("/models/baseline.pkl")
 
 
+
+# %%
