@@ -198,30 +198,26 @@ forest_reg =  RandomForestRegressor()
 # fit the model to our training data
 forest_reg.fit(X_train, y_train)
 
-# prediction for X_val_1 (not needed because this is done during cross validation)
-# predicted_forest = forest_reg.predict(X_val_1)
+# prediction for X_val_1
+y_pred = forest_reg.predict(X_val_1)
 
-# compute cross validation scores
-from sklearn.model_selection import cross_val_score
-scores = cross_val_score(forest_reg, X_val_1, y_val_1, scoring = "neg_root_mean_squared_error", cv = 5) 
-forest_rmse_scores = np.sqrt(-scores)
+# evaluate
+forest_mse = mean_squared_error(y_val_1, y_pred)
+print(forest_mse)
+forest_rmse = np.sqrt(forest_mse)
 
-def display_scores(scores):
-    print("Scores:", scores)
-    print("Mean:", scores.mean())
-    print("Standard deviation:", scores.std())
+forest_rmse # result: 71.15293129026736
 
-# forest_mse = mean_squared_error(y_val_1, y_pred)
-# print(forest_reg_mse)
-
-display_scores(forest_rmse_scores)
+# alternative: compute cross validation scores
+#from sklearn.model_selection import cross_val_score
+#scores = cross_val_score(forest_reg, X_train, y_train, scoring = "neg_root_mean_squared_error", cv = 5) 
 
 # saves the model 
 import joblib
 joblib.dump(forest_reg, "models/RandomForests.pkl")
 
 # load the model if needed
-RandomForest_loaded=joblib.load("models/RandomForests.pkl")
+forest_reg = joblib.load("models/RandomForests.pkl")
 
 
 #%% ExtraTrees (Extremely Randomized Trees)
@@ -235,22 +231,19 @@ extra_reg =  ExtraTreesRegressor()
 # fit the model to our training data
 extra_reg.fit(X_train, y_train)
 
-# prediction for X_val_1 (not needed because this is done during cross validation)
-# predicted_forest = forest_reg.predict(X_val_1)
+# prediction for X_val_1
+y_pred = extra_reg.predict(X_val_1)
 
-# compute cross validation scores
-from sklearn.model_selection import cross_val_score
-scores = cross_val_score(extra_reg, X_val_1, y_val_1, scoring = "neg_root_mean_squared_error", cv = 5)
-extra_rmse_scores = np.sqrt(-scores)
+# evaluate
+extra_mse = mean_squared_error(y_val_1, y_pred)
+print(extra_mse)
+extra_rmse = np.sqrt(extra_mse)
 
-# forest_mse = mean_squared_error(y_val_1, y_pred)
-# print(forest_reg_mse)
-
-display_scores(extra_rmse_scores)
+extra_rmse # result: 70.29067166539122
 
 # saves the model 
 import joblib
 joblib.dump(extra_reg, "models/ExtraTrees.pkl")
 
 # load the model if needed
-ExtraTrees_loaded=joblib.load("models/ExtraTrees.pkl")
+extra_reg = joblib.load("models/ExtraTrees.pkl")
