@@ -13,13 +13,6 @@ section 1
 
 
 
-#%% model 2 poly-ridge degree 3
-
-
-section 2
-
-
-
 #%% model 3 RandomForest
 
 from sklearn.ensemble import RandomForestRegressor

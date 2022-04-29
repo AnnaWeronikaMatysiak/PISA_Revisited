@@ -21,7 +21,7 @@ import os
 
 # set working directory
 os.getcwd()
-os.chdir('/Volumes/GoogleDrive/My Drive/PISA_Revisited/')
+os.chdir('/GoogleDrive/My Drive/PISA_Revisited/')
 
 # to make the output stable across runs
 np.random.seed(42)

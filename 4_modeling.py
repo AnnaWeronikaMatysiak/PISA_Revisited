@@ -99,13 +99,11 @@ print('MAE_ridge: ', mae_ridge)
 
 #%% polynomial transformation of independent variables
 
-# degree 2
 poly_features = PolynomialFeatures(degree=2, include_bias=False)
 X_poly_2 = poly_features.fit_transform(X_train)
+X_poly_2=pd.DataFrame(X_poly_2)
+X_val_1_poly=poly_features.fit_transform(X_val_1)
 
-#degree 3
-poly_features = PolynomialFeatures(degree=3, include_bias=False)
-X_poly_3 = poly_features.fit_transform(X_train)
 
 
 #%% polynomial regression with ridge regularisation - degree 2
@@ -115,13 +113,15 @@ poly_reg_w_ridge = Ridge()
 poly_reg_w_ridge.fit(X_poly_2, y_train) 
 
 #predicting outcome
-y_predicted_poly_2 = poly_reg_w_ridge.predict(X_val_1)
+y_predicted_poly_2 = poly_reg_w_ridge.predict(X_val_1_poly)
+
+#change type
+y_predicted_poly_2=pd.DataFrame(y_predicted_poly_2)
+y_predicted_poly_2.head()
 
 # evaluation
 rmse_poly2= np.sqrt(mean_squared_error(y_val_1, y_predicted_poly_2))
 mae_poly2= mean_absolute_error(y_val_1, y_predicted_poly_2)
-
-
 r2_poly2= r2_score(y_val_1,y_predicted_poly_2)
 
 print('RMSE_ridge_poly_2: ',rmse_poly2)
@@ -144,46 +144,6 @@ param = {
 # search
 search = GridSearchCV(poly_reg_w_ridge, param, scoring='rmse', n_jobs=-1, cv=X_val_1)
 result = search.fit(X_poly_2, y_train)
-
-# summarize result
-print('Best Score: %s' % result.best_score_)
-print('Best Hyperparameters: %s' % result.best_params_)
-
-#%% polynomial regression with ridge regularisation - degree 3
-
-poly_reg_w_ridge_3= Ridge()
-poly_reg_w_ridge_3.fit(X_poly_3, y_train)
-
-y_predicted_poly_3 = poly_reg_w_ridge_3.predict(X_val_1)
-
-# evaluation
-rmse_poly3= np.sqrt(mean_squared_error(y_val_1, y_predicted_poly_3))
-mae_poly3= mean_absolute_error(y_val_1, y_predicted_poly_3)
-
-
-r2_poly3= r2_score(y_val_1,y_predicted_poly_3)
-
-print('RMSE_ridge_poly_2: ',rmse_poly3)
-print('MAE_ridge_poly_2: ', mae_poly3)
-print ('R2_ridge_poly2:', r2_poly3)
-
-# saving the model
-joblib.dump(poly_reg_w_ridge_3, "/models/poly_reg_w_ridge_3.pkl")
-
-#loading if needed
-#poly_reg_w_ridge_3_loaded=joblib.load("/models/poly_reg_w_ridge_3.pkl")
-
-# comparing parameters - definitions
-
-param = {
-    'alpha':[.0001, 0.001,0.01, 0.01,1],
-    'fit_intercept':[True,False],
-    'normalize':[True,False],
-'solver':['auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']
-       }
-# search
-search = GridSearchCV(poly_reg_w_ridge_3, param, scoring='rmse', n_jobs=-1, cv=X_val_1)
-result = search.fit(X_poly_3, y_train)
 
 # summarize result
 print('Best Score: %s' % result.best_score_)
