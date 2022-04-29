@@ -7,9 +7,7 @@ Created on Thu Mar 31 15:14:00 2022
 
 """
 TO DO:
-- visualisation of error measures
-- save the model somehow if needed (pipeline for evaluation?)
-- sd
+- visualisation of error measures (look at session 5)
 """
 
 #%% call setup file
@@ -57,8 +55,15 @@ y_predicted=lin_reg.predict(X_val_1)
 rmse= np.sqrt(mean_squared_error(y_val_1, y_predicted))
 mae= mean_absolute_error(y_val_1, y_predicted)
 
-print('RMSE_linear: ',rmse)
-print('MAE_linear: ', mae)
+print('RMSE_linear: ',rmse) # result: 68.5229128573592
+# print('MAE_linear: ', mae)
+
+# saves the model 
+import joblib
+joblib.dump(lin_reg, "models/LinearRegression.pkl")
+
+# load the model if needed
+# lin_reg = joblib.load("models/LinearRegression.pkl")
 
 #%%Saving Baseline Metrics in Table
 d = {'Model': ['Baseline: Linear Regression'], 'RMSE': [round(rmse, 4)], 'MAE': [round(mae, 4)]}

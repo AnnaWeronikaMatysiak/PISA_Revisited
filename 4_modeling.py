@@ -15,12 +15,8 @@ Ania:
 - saving models
 - add rmse to all
 
-
 Johanna:
-- add extra trees with evalautions
-- work on the random forest
-- saving models
--grid search for the trees (with val_2, CV is automaticallz implemented)
+- all done so far
 
 Max/together:
 - performance plots
@@ -141,6 +137,7 @@ param = {
     'normalize':[True,False],
 'solver':['auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga']
        }
+
 # search
 search = GridSearchCV(poly_reg_w_ridge, param, scoring='rmse', n_jobs=-1, cv=X_val_1)
 result = search.fit(X_poly_2, y_train)
@@ -148,6 +145,7 @@ result = search.fit(X_poly_2, y_train)
 # summarize result
 print('Best Score: %s' % result.best_score_)
 print('Best Hyperparameters: %s' % result.best_params_)
+
 
 #%% Random Forest Regressor
 

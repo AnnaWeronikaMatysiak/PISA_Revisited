@@ -205,8 +205,8 @@ PISA_female.to_csv("data/PISA_female.csv")
 PISA_male.to_csv("data/PISA_male.csv")
 
 # drop first entries if needed
-drop_first_entry(PISA_female)
-drop_first_entry(PISA_male)
+# drop_first_entry(PISA_female)
+# drop_first_entry(PISA_male)
 
 # split gender subsets
 X_female = PISA_female.drop(columns=["read_score"])

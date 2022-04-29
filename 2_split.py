@@ -6,10 +6,7 @@ Created on Mon Apr 25 20:28:33 2022
 @author: Anna
 """
 
-"""
-TO DO:
-- add subsets by gender
-"""
+
 #%% call setup file
 
 import runpy

@@ -6,14 +6,7 @@ Created on Wed Apr 27 17:42:21 2022
 
 """
 
-#%% model 1 poly-ridge degree 2
-
-
-section 1
-
-
-
-#%% model 3 RandomForest
+#%% model 2 RandomForest
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
@@ -99,7 +92,7 @@ joblib.dump(forest_reg, "models/RandomForests_tuned.pkl")
 # RandomForest_loaded=joblib.load("models/RandomForests_tuned.pkl")
 
 
-#%% model 4 ExtraTrees
+#%% model 3 ExtraTrees
 
 """param_grid = [
     {"n_estimators": [50, 100, 150], "max_features": [30, 40, 50]},
@@ -128,7 +121,7 @@ for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
     
 ####################
 
-# second try with more max_features
+"""# second try with more max_features
 
 param_grid = [
     {"n_estimators": [300], "max_features": [50, 75, 100]},
@@ -160,7 +153,7 @@ import joblib
 joblib.dump(forest_reg, "models/ExtraTrees_tuned.pkl")
 
 # load the model if needed
-# RandomForest_loaded=joblib.load("models/ExtraTree_tuned.pkl")"""
+# RandomForest_loaded=joblib.load("models/ExtraTree_tuned.pkl")""""""
 
 
 ######################
@@ -220,9 +213,44 @@ grid_search = GridSearchCV(extra_reg, param_grid, cv=5,
 # perform grid search with the validdation set 2 
 grid_search.fit(X_val_2, y_val_2.values.ravel())
 
-# get best parameters
-grid_search.best_params_
-# result: {'max_features': 100, 'n_estimators': 300} -> score = 72.06615214928573 which is worse than with default parameters
+# score = 71.94692616588618
+
+# look at evaluation scores of all parameter combinations
+cvres = grid_search.cv_results_
+for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
+    print(np.sqrt(-mean_score), params)
+
+
+# saves the model 
+import joblib
+joblib.dump(forest_reg, "models/ExtraTrees_tuned.pkl")
+
+# load the model if needed
+# RandomForest_loaded=joblib.load("models/ExtraTree_tuned.pkl")"""
+
+
+
+##################################
+
+
+# fifth try with even more trees
+
+param_grid = [
+    {"n_estimators": [10000], "max_features": [100]},
+    ]
+
+from sklearn.ensemble import ExtraTreesRegressor
+
+extra_reg =  ExtraTreesRegressor()
+
+grid_search = GridSearchCV(extra_reg, param_grid, cv=5,
+                         scoring="neg_mean_squared_error",
+                         return_train_score=True, verbose=1)
+
+# perform grid search with the validdation set 2 
+grid_search.fit(X_val_2, y_val_2.values.ravel())
+
+# score = 
 
 # look at evaluation scores of all parameter combinations
 cvres = grid_search.cv_results_

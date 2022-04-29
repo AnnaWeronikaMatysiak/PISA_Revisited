@@ -25,9 +25,6 @@ PISA_male = pd.read_csv("data/PISA_male.csv")
 # if needed, drop first entries
 # drop_first_entry(data)
 
-# load the best model
-import joblib
-ExtraTrees_loaded=joblib.load("models/ExtraTrees.pkl")
 
 #%% evaluation on the test set
 
@@ -42,19 +39,25 @@ drop_first_entry(X_test)
 drop_first_entry(y_test)
 
 # evaluate the best model on the test set... see the final score!
-
-# load the model
-extra_reg = joblib.load("models/ExtraTrees.pkl")
+# load the best model
+import joblib
+lin_reg = joblib.load("models/LinearRegression.pkl")
 
 # prediction for X_val_1
-y_pred = extra_reg.predict(X_test)
+y_pred = lin_reg.predict(X_test)
 
 # evaluate
-extra_mse = mean_squared_error(y_test, y_pred)
-print(extra_mse)
-extra_rmse = np.sqrt(extra_mse)
+lin_reg_mse = mean_squared_error(y_test, y_pred)
+lin_reg_rmse = np.sqrt(lin_reg_mse)
+print(lin_reg_rmse)
+ # result: 68.31392796584475
 
-extra_rmse # result: 70.33416317840613
+
+#%% plot 
+
+
+
+
 
 
 #%% fit model on boys and girls subset and check feature importance to find the best predictors
