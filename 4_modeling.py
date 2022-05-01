@@ -29,6 +29,7 @@ from sklearn.model_selection import RepeatedKFold
 from sklearn.model_selection import cross_val_score
 from sklearn.pipeline import make_pipeline
 from sklearn.linear_model import RidgeCV
+from sklearn.metrics import mean_absolute_error
 
 #%% call setup file
 import runpy
@@ -74,8 +75,12 @@ predicted_ridge=ridge_reg.predict(X_val_1)
 #to check which alpha was used
 ridge_reg_model.alpha_
 rmse_ridge= np.sqrt(mean_squared_error(y_val_1, predicted_ridge))
+mae_ridge=mean_absolute_error(y_val_1, predicted_ridge)
+r_2_ridge=r2_score(y_val_1, predicted_ridge)
 
 print('RMSE_ridge: ',rmse_ridge) #result: RMSE=68.51031872157898
+print('MAE_linear:', mae_ridge) # result: MAE=54.398277624619126
+print('R_2_linear:', r_2_ridge) #result: R_2=0.5922037262775235
 
 #%% simple ridge regression
 #trianing
@@ -119,11 +124,12 @@ print(gs.best_estimator_.get_params()["ridge"])
 print('Best Score: %s' % np.sqrt(-results.best_score_))
 print('Best Hyperparameters: %s' % results.best_params_)
 
-#reults:
-#Ridge(alpha=6, solver='svd')
-#Best Score: 69.16716767900738
-#Best Hyperparameters: {'ridge__alpha': 6, 'ridge__fit_intercept': True, 'ridge__solver': 'svd'}
+#results:
+#Best Score: 48.089040334701856
+#Best Hyperparameters: {'ridge__alpha': 5, 'ridge__fit_intercept': True, 'ridge__solver': 'cholesky'}
 
+
+#save the model
 #%% feature transformation to degree=2
 poly_features = PolynomialFeatures(degree=2, include_bias=False)
 X_poly_2 = poly_features.fit_transform(X_train)
@@ -160,60 +166,4 @@ print(gs.best_estimator_.get_params()["ridge"])
 print('Best Score: %s' % np.sqrt(-results_2.best_score_))
 print('Best Hyperparameters: %s' % results_2.best_params_)
 
-#%% Random Forest Regressor
 
-from sklearn.ensemble import RandomForestRegressor
-
-forest_reg =  RandomForestRegressor()
-
-# fit the model to our training data
-forest_reg.fit(X_train, y_train)
-
-# prediction for X_val_1
-y_pred = forest_reg.predict(X_val_1)
-
-# evaluate
-forest_mse = mean_squared_error(y_val_1, y_pred)
-print(forest_mse)
-forest_rmse = np.sqrt(forest_mse)
-
-forest_rmse # result: 71.15293129026736
-
-# alternative: compute cross validation scores
-#from sklearn.model_selection import cross_val_score
-#scores = cross_val_score(forest_reg, X_train, y_train, scoring = "neg_root_mean_squared_error", cv = 5) 
-
-# saves the model 
-joblib.dump(forest_reg, "models/RandomForests.pkl")
-
-# load the model if needed
-forest_reg = joblib.load("models/RandomForests.pkl")
-
-
-#%% ExtraTrees (Extremely Randomized Trees)
-
-# trades more bias for a lower variance, much faster to train than RandomForests
-
-from sklearn.ensemble import ExtraTreesRegressor
-
-extra_reg =  ExtraTreesRegressor()
-
-# fit the model to our training data
-extra_reg.fit(X_train, y_train)
-
-# prediction for X_val_1
-y_pred = extra_reg.predict(X_val_1)
-
-# evaluate
-extra_mse = mean_squared_error(y_val_1, y_pred)
-print(extra_mse)
-extra_rmse = np.sqrt(extra_mse)
-
-extra_rmse # result: 70.29067166539122
-
-# saves the model 
-import joblib
-joblib.dump(extra_reg, "models/ExtraTrees.pkl")
-
-# load the model if needed
-extra_reg = joblib.load("models/ExtraTrees.pkl")

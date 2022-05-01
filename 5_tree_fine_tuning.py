@@ -5,11 +5,101 @@ Created on Wed Apr 27 17:42:21 2022
 @author: Jo&Anna
 
 """
+#%% necessary packages
+import numpy as np
+import pandas as pd
+import joblib
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import ExtraTreesRegressor
+
+#%% call setup file
+import runpy
+runpy.run_path(path_name = '/0_setup.py')
+
+# imports sys, sklearn, numpy, os, matplotlib, pathlib
+# checks versions, sets wd, sets random.seed 42, specifies plots
+# defines function save_fig()
+
+#%% read in data
+#X_test = pd.read_csv("/My Drive/PISA_Revisited/data/X_test.csv") 
+#y_test = pd.read_csv("/My Drive/PISA_Revisited/data/y_test.csv")
+
+X_train = pd.read_csv("data/X_train.csv")
+y_train = pd.read_csv("data/y_train.csv")
+
+X_val_1 = pd.read_csv("data/X_val_1.csv") 
+y_val_1 = pd.read_csv("data/y_val_1.csv")
+
+X_val_2 = pd.read_csv("data/X_val_2.csv") 
+y_val_2 = pd.read_csv("data/y_val_2.csv")
+
+# if needed, drop first column that was automatically generated 
+# -> dimensions should be 205 columns in X and 1 in y
+def drop_first_entry(df):
+    df.drop(df.columns[[0]], axis = 1, inplace = True)
+
+drop_first_entry(X_train)
+drop_first_entry(y_train)
+drop_first_entry(X_val_1)
+drop_first_entry(y_val_1)
+drop_first_entry(X_val_2)
+drop_first_entry(y_val_2)
+
+#%% Random Forest Regressor
+forest_reg =  RandomForestRegressor()
+
+# fit the model to our training data
+forest_reg.fit(X_train, y_train)
+
+# prediction for X_val_1
+y_pred = forest_reg.predict(X_val_1)
+
+# evaluate
+forest_mse = mean_squared_error(y_val_1, y_pred)
+print(forest_mse)
+forest_rmse = np.sqrt(forest_mse)
+
+forest_rmse # result: 71.15293129026736
+
+# alternative: compute cross validation scores
+#from sklearn.model_selection import cross_val_score
+#scores = cross_val_score(forest_reg, X_train, y_train, scoring = "neg_root_mean_squared_error", cv = 5) 
+
+# saves the model 
+joblib.dump(forest_reg, "models/RandomForests.pkl")
+
+# load the model if needed
+forest_reg = joblib.load("models/RandomForests.pkl")
+
+#%% ExtraTrees (Extremely Randomized Trees)
+
+# trades more bias for a lower variance, much faster to train than RandomForests
+extra_reg =  ExtraTreesRegressor()
+
+# fit the model to our training data
+extra_reg.fit(X_train, y_train)
+
+# prediction for X_val_1
+y_pred = extra_reg.predict(X_val_1)
+
+# evaluate
+extra_mse = mean_squared_error(y_val_1, y_pred)
+print(extra_mse)
+extra_rmse = np.sqrt(extra_mse)
+
+extra_rmse # result: 70.29067166539122
+
+# saves the model 
+
+joblib.dump(extra_reg, "models/ExtraTrees.pkl")
+
+# load the model if needed
+extra_reg = joblib.load("models/ExtraTrees.pkl")
+
 
 #%% model 2 RandomForest
-
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import GridSearchCV
 
 # n_estimators: number of trees in the forest. default = 100
 # max_features: number of features to consider when looking for the best split. default = 
@@ -85,7 +175,6 @@ for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
     print(np.sqrt(-mean_score), params)
     
 # saves the model 
-import joblib
 joblib.dump(forest_reg, "models/RandomForests_tuned.pkl")
 
 # load the model if needed
@@ -164,8 +253,6 @@ param_grid = [
     {"n_estimators": [300], "max_features": [110, 125, 140]},
     ]
 
-from sklearn.ensemble import ExtraTreesRegressor
-
 extra_reg =  ExtraTreesRegressor()
 
 grid_search = GridSearchCV(extra_reg, param_grid, cv=5,
@@ -186,7 +273,6 @@ for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
 
 
 # saves the model 
-import joblib
 joblib.dump(forest_reg, "models/ExtraTrees_tuned_2.pkl")
 
 # load the model if needed
@@ -201,8 +287,6 @@ joblib.dump(forest_reg, "models/ExtraTrees_tuned_2.pkl")
 param_grid = [
     {"n_estimators": [1000], "max_features": [100]},
     ]
-
-from sklearn.ensemble import ExtraTreesRegressor
 
 extra_reg =  ExtraTreesRegressor()
 
@@ -222,7 +306,6 @@ for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
 
 
 # saves the model 
-import joblib
 joblib.dump(forest_reg, "models/ExtraTrees_tuned.pkl")
 
 # load the model if needed
@@ -238,8 +321,6 @@ joblib.dump(forest_reg, "models/ExtraTrees_tuned.pkl")
 param_grid = [
     {"n_estimators": [10000], "max_features": [100]},
     ]
-
-from sklearn.ensemble import ExtraTreesRegressor
 
 extra_reg =  ExtraTreesRegressor()
 
@@ -259,7 +340,6 @@ for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
 
 
 # saves the model 
-import joblib
 joblib.dump(forest_reg, "models/ExtraTrees_tuned.pkl")
 
 # load the model if needed
