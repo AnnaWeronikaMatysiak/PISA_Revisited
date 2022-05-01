@@ -18,10 +18,10 @@ runpy.run_path(path_name = '/0_setup.py')
 from sklearn.linear_model import LinearRegression
 import pandas as pd
 import numpy as np
-#import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import r2_score
+import joblib
 
 #%% read in data
 
@@ -54,15 +54,12 @@ y_predicted=lin_reg.predict(X_val_1)
 
 #evaluation
 rmse= np.sqrt(mean_squared_error(y_val_1, y_predicted))
-mae= mean_absolute_error(y_val_1, y_predicted)
-r2= r2_score(y_val_1,y_predicted)
-
+mae=mean_absolute_error(y_val_1, y_predicted)
+r_2=r2_score(y_val_1, y_predicted)
 print('RMSE_linear: ',rmse) # result: 68.5229128573592
-# print('MAE_linear: ', mae)
-print('R2:', r2)
-
+print('MAE_linear:', mae) # result: 54.40138962766195
+print('R_2_linear:', r_2) #result: 0.5920794258682984
 # saves the model 
-import joblib
 joblib.dump(lin_reg, "models/LinearRegression.pkl")
 
 # load the model if needed
@@ -133,3 +130,7 @@ joblib.dump(lin_reg, "/models/baseline.pkl")
 
 
 
+#d = {'Model': ['Baseline: Linear Regression'], 'RMSE': [round(rmse, 4)], 'MAE': [round(mae, 4)], 'R_2': [round(r_2, 4)]}
+#table_baseline = pd.DataFrame(data=d)
+#table_baseline
+#%%
