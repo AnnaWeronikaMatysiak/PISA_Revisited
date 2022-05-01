@@ -21,6 +21,7 @@ import numpy as np
 #import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import r2_score
 
 #%% read in data
 
@@ -54,9 +55,11 @@ y_predicted=lin_reg.predict(X_val_1)
 #evaluation
 rmse= np.sqrt(mean_squared_error(y_val_1, y_predicted))
 mae= mean_absolute_error(y_val_1, y_predicted)
+r2= r2_score(y_val_1,y_predicted)
 
 print('RMSE_linear: ',rmse) # result: 68.5229128573592
 # print('MAE_linear: ', mae)
+print('R2:', r2)
 
 # saves the model 
 import joblib
@@ -66,9 +69,11 @@ joblib.dump(lin_reg, "models/LinearRegression.pkl")
 # lin_reg = joblib.load("models/LinearRegression.pkl")
 
 #%%Saving Baseline Metrics in Table
-d = {'Model': ['Baseline: Linear Regression'], 'RMSE': [round(rmse, 4)], 'MAE': [round(mae, 4)]}
+d = {'Model': ['Baseline: Linear Regression'], 'RMSE': [round(rmse, 4)], 'MAE': [round(mae, 4)], 'R2': [round(r2, 4)]}
 table_baseline = pd.DataFrame(data=d)
 table_baseline
+table_baseline.style.to_latex("baseline_table.tex", index=False, caption="Baseline Evaluation Metrics")
+
 
 # saving
 import joblib
@@ -78,6 +83,53 @@ joblib.dump(lin_reg, "/models/baseline.pkl")
 #loading
 #baseline_loaded=joblib.load("/models/baseline.pkl")
 
+#%% visualizing baseline
+
+# import matplotlib.pyplot as plt
+# import numpy as np
+
+# # Version 1 - Bad Code
+# def plotGraph(y_val_1,y_pred,lin_reg):
+#     if max(y_val_1) >= max(y_pred):
+#         my_range = int(max(y_val_1))
+#     else:
+#         my_range = int(max(y_pred))
+#     plt.scatter(range(len(y_val_1)), y_val_1, color='blue')
+#     plt.scatter(range(len(y_pred)), y_pred, color='red')
+#     plt.title(lin_reg)
+#     plt.show()
+#     return
+
+# y_val_1 = range(100)
+# y_pred = np.random.randint(0, 100, 10)
+
+# plotGraph(y_val_1, y_pred, "test")
+
+# #Version 3 - 
+
+# plt.figure(figsize=(10,10))
+# plt.scatter(y_val_1, y_pred, c='crimson')
+# plt.yscale('log')
+# plt.xscale('log')
+
+# p1 = max(max(y_pred), max(y_val_1)
+# p2 = min(min(y_pred), min(y_val_1))
+# plt.plot([p1, p2], [p1, p2], 'b-')
+# plt.xlabel('True Values', fontsize=15)
+# plt.ylabel('Predictions', fontsize=15)
+# plt.axis('equal')
+# plt.show()
+
+# #Version 4 - n
+#  plt.scatter(y_val_1, y_pred)
+#  plt.xlabel('True Values ')
+#  plt.ylabel('Predictions ')
+#  plt.axis('equal')
+#  plt.axis('square')
+#  plt.show()
+#  plt.xlim([0, plt.xlim()])
+#  plt.ylim([0, plt.ylim()])
+#  plt.show()
 
 
-# %%
+

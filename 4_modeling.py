@@ -22,7 +22,6 @@ Max/together:
 - performance plots
 - evaluate on the test
 - present the 10 best predictors of the best model
-- if we have time: combine models in an ensemble (like in the lab)
 """
 
 #%% necessary packages
@@ -88,9 +87,16 @@ predicted_ridge=ridge_reg.predict(X_val_1)
 ridge_reg_model.alpha_
 rmse_ridge= np.sqrt(mean_squared_error(y_val_1, predicted_ridge))
 mae_ridge=mean_absolute_error(y_val_1, predicted_ridge)
+r2_ridge=r2_score(y_val_1, predicted_ridge)
 
 print('RMSE_ridge: ',rmse_ridge)
 print('MAE_ridge: ', mae_ridge)
+
+#adding values to table
+d2 = {'Model': ['Baseline: Linear Regression', 'Ridge (0.01)'], 'RMSE': [round(rmse, 4), round(rmse_ridge, 4)], 'MAE': [round(mae, 4), round(mae_ridge, 4)], 'R2': [round(r2, 4), round(r2_ridge, 4)]}
+table_baseline_ridge = pd.DataFrame(data=d2)
+table_baseline_ridge
+table_baseline.to_latex("baseline_ridge_table.tex", index=False, caption="Comparing Model Performance")
 
 
 #%% polynomial transformation of independent variables
@@ -127,6 +133,15 @@ print ('R2_ridge_poly2:', r2_poly2)
 # saving the baseline model
 joblib.dump(poly_reg_w_ridge, "/models/poly_reg_w_ridge.pkl")
 
+#saving in table
+d3 = {'Model': ['Baseline: Linear Regression', 'Ridge (0.01)', 'Polynomial Ridge'],
+'RMSE': [round(rmse, 4), round(rmse_ridge, 4), round(rmse_poly2, 4)], 
+'MAE': [round(mae, 4), round(mae_ridge, 4), round(mae_poly2, 4)], 
+'R2': [round(r2, 4), round(r2_ridge, 4), round(r2_poly2, 4)]}
+table_base_ridge_poly = pd.DataFrame(data=d3)
+table_base_ridge_poly
+table_base_ridge_poly.to_latex("base_ridge_poly_table.tex", index=False, caption="Comparing Model Performance")
+
 #loading if needed
 #poly_reg_w_ridge_loaded=joblib.load("/models/poly_reg_w_ridge.pkl")
 
@@ -139,7 +154,7 @@ param = {
        }
 
 # search
-search = GridSearchCV(poly_reg_w_ridge, param, scoring='rmse', n_jobs=-1, cv=X_val_1)
+search = GridSearchCV(poly_reg_w_ridge, param, scoring='neg_mean_squared_error', n_jobs=-1, cv=X_val_1)
 result = search.fit(X_poly_2, y_train)
 
 # summarize result
@@ -161,8 +176,12 @@ y_pred = forest_reg.predict(X_val_1)
 
 # evaluate
 forest_mse = mean_squared_error(y_val_1, y_pred)
-print(forest_mse)
+forest_r2 = r2_score(y_val_1, y_pred)
+forest_mae = mean_absolute_error(y_val_1, y_pred)
+print(forest_r2)
 forest_rmse = np.sqrt(forest_mse)
+print(forest_rmse)
+
 
 forest_rmse # result: 71.15293129026736
 
@@ -173,6 +192,15 @@ forest_rmse # result: 71.15293129026736
 # saves the model 
 import joblib
 joblib.dump(forest_reg, "models/RandomForests.pkl")
+
+#save to evaluation table
+d4 = {'Model': ['Baseline: Linear Regression', 'Ridge (0.01)', 'Polynomial Ridge', 'Random Forest'],
+'RMSE': [round(rmse, 4), round(rmse_ridge, 4), round(rmse_poly2, 4), round(forest_rmse, 4)], 
+'MAE': [round(mae, 4), round(mae_ridge, 4), round(mae_poly2, 4), round(forest_mae, 4)], 
+'R2': [round(r2, 4), round(r2_ridge, 4), round(r2_poly2, 4), round(forest_r2, 4)]}
+table_base_ridge_poly_forest = pd.DataFrame(data=d4)
+table_base_ridge_poly_forest
+table_base_ridge_poly_forest.to_latex("base_ridge_poly_forest.tex", index=False, caption="Comparing Model Performance")
 
 # load the model if needed
 forest_reg = joblib.load("models/RandomForests.pkl")
@@ -194,6 +222,8 @@ y_pred = extra_reg.predict(X_val_1)
 
 # evaluate
 extra_mse = mean_squared_error(y_val_1, y_pred)
+extra_r2 = r2_score(y_val_1, y_pred)
+extra_mae = mean_absolute_error(y_val_1, y_pred)
 print(extra_mse)
 extra_rmse = np.sqrt(extra_mse)
 
@@ -203,5 +233,17 @@ extra_rmse # result: 70.29067166539122
 import joblib
 joblib.dump(extra_reg, "models/ExtraTrees.pkl")
 
+#saving in table
+
+d5 = {'Model': ['Baseline: Linear Regression', 'Ridge (0.01)', 'Polynomial Ridge', 'Random Forest', 'Extra Trees'],
+'RMSE': [round(rmse, 4), round(rmse_ridge, 4), round(rmse_poly2, 4), round(forest_rmse, 4), round(extra_rmse, 4)], 
+'MAE': [round(mae, 4), round(mae_ridge, 4), round(mae_poly2, 4), round(forest_mae, 4), round(extra_mae, 4)], 
+'R2': [round(r2, 4), round(r2_ridge, 4), round(r2_poly2, 4), round(forest_r2, 4), round(extra_r2, 4)]}
+table_base_ridge_poly_forest_extra = pd.DataFrame(data=d5)
+table_base_ridge_poly_forest_extra
+table_base_ridge_poly_forest_extra.to_latex("base_ridge_poly_forest_extra.tex", index=False, caption="Comparing Model Performance")
+
 # load the model if needed
 extra_reg = joblib.load("models/ExtraTrees.pkl")
+
+# %%
