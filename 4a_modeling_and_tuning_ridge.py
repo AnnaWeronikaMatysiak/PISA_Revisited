@@ -161,6 +161,9 @@ r2_poly2 = r2_score(y_val_1,y_predicted_poly_2)
 print('RMSE_ridge_poly_2: ',rmse_poly2)
 print ('R2_ridge_poly2:', r2_poly2)
 
+#RMSE_ridge_poly_2:  70.76227723764582
+#R2_ridge_poly2: 0.5649543018209748
+
 # saving the model
 joblib.dump(poly_reg_w_ridge, "models/poly_reg_w_ridge.pkl")
 
