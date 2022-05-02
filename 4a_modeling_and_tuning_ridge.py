@@ -125,7 +125,7 @@ print('Best Score: %s' % np.sqrt(-gs.best_score_))
 print('Best Hyperparameters: %s' % gs.best_params_)
 
 #results:
-#this was on the train data, so probaby overfitted
+#this was on the train data, so probably overfitted
 #Best Score: 48.089040334701856
 #Best Hyperparameters: {'ridge__alpha': 5, 'ridge__fit_intercept': True, 'ridge__solver': 'cholesky'}
 
@@ -135,17 +135,17 @@ print('Best Hyperparameters: %s' % gs.best_params_)
 #Best Hyperparameters: {'ridge__alpha': 5, 'ridge__fit_intercept': True, 'ridge__solver': 'sag'}
 
 #%%save the model
-final_ridge_model= gs.best_estimator_
+final_ridge_model = gs.best_estimator_
 joblib.dump(final_ridge_model, "models/final_ridge_model.pkl")
 
 #%% feature transformation to degree=2
 poly_features = PolynomialFeatures(degree=2, include_bias=False)
 X_poly_2 = poly_features.fit_transform(X_train)
-X_poly_2=pd.DataFrame(X_poly_2)
-X_val_1_poly=poly_features.fit_transform(X_val_1)
-X_val_1_poly=pd.DataFrame(X_val_1_poly)
-X_val_2_poly=poly_features.fit_transform(X_val_2)
-X_val_2_poly=pd.DataFrame(X_val_2_poly)
+X_poly_2 = pd.DataFrame(X_poly_2)
+X_val_1_poly = poly_features.fit_transform(X_val_1)
+X_val_1_poly = pd.DataFrame(X_val_1_poly)
+X_val_2_poly = poly_features.fit_transform(X_val_2)
+X_val_2_poly = pd.DataFrame(X_val_2_poly)
 #%% polynomial regression with ridge regularisation - degree 2
 #training model
 poly_reg_w_ridge = Ridge()
@@ -155,8 +155,8 @@ poly_reg_w_ridge.fit(X_poly_2, y_train)
 y_predicted_poly_2 = poly_reg_w_ridge.predict(X_val_1_poly)
 
 # evaluation
-rmse_poly2= np.sqrt(mean_squared_error(y_val_1, y_predicted_poly_2))
-r2_poly2= r2_score(y_val_1,y_predicted_poly_2)
+rmse_poly2 = np.sqrt(mean_squared_error(y_val_1, y_predicted_poly_2))
+r2_poly2 = r2_score(y_val_1,y_predicted_poly_2)
 
 print('RMSE_ridge_poly_2: ',rmse_poly2)
 print ('R2_ridge_poly2:', r2_poly2)

@@ -72,14 +72,6 @@ table_baseline
 table_baseline.style.to_latex("baseline_table.tex", index=False, caption="Baseline Evaluation Metrics")
 
 
-# saving
-import joblib
-
-joblib.dump(lin_reg, "/models/baseline.pkl")
-
-#loading
-#baseline_loaded=joblib.load("/models/baseline.pkl")
-
 #%% visualizing baseline
 
 # import matplotlib.pyplot as plt

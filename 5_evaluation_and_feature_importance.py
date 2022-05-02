@@ -12,6 +12,7 @@ Created on Thu Apr 28 16:11:16 2022
 - look at the strongest predictors
 """
 
+import pandas as pd
 
 #%% evaluation of the best model (ridge tuned) on the test set
 
@@ -37,8 +38,7 @@ y_pred = final_model.predict(X_test)
 lin_reg_mse = mean_squared_error(y_test, y_pred)
 lin_reg_rmse = np.sqrt(lin_reg_mse)
 print(lin_reg_rmse)
- # result: 
-
+ # result: 69.0934592678894
 
 
 #%% fit model on boys and girls subset and check feature importance to find the best predictors
@@ -82,8 +82,7 @@ predictors_girls.to_csv("data/predictors_girls.csv")
 #####################################
 
 # fit the model to boys
-ExtraTrees_loaded.fit(X_female, y_female)
-ExtraTrees_loaded.fit(X_male, y_male)
+final_model.fit(X_male, y_male)
 
 # feature importance
 feature_importances = ExtraTrees_loaded.feature_importances_
