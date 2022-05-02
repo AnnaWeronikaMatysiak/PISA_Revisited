@@ -37,12 +37,10 @@ mpl.rc('ytick', labelsize=12)
 from pathlib import Path
 Path("figures").mkdir(parents=True, exist_ok=True)
 
-# still need to get it done that it actually uses the new folder!!
 
 # Where to save the figures
-PROJECT_ROOT_DIR = "." # JM: still need to change to our figures folder
-# CHAPTER_ID = "training_linear_models" # JM: I think we don't need this
-IMAGES_PATH = os.path.join(PROJECT_ROOT_DIR) # JM: I deleted: , "images")
+PROJECT_ROOT_DIR = "." 
+IMAGES_PATH = os.path.join(PROJECT_ROOT_DIR) #deleted: , "images")
 os.makedirs(IMAGES_PATH, exist_ok=True)
 
 def save_fig(fig_id, tight_layout=True, fig_extension="png", resolution=300):

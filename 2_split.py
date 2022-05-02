@@ -6,7 +6,6 @@ Created on Mon Apr 25 20:28:33 2022
 @author: Anna
 """
 
-
 #%% call setup file
 
 import runpy
@@ -21,13 +20,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 #%% read in data
-
-# read csv file (current version, excahnge later)
-# taken from file 1, but still missing imputing and normalization -> see file 1.1 and 1.2
 PISA_prepared = pd.read_csv("data/PISA_prepared.csv")
-
-# drop first column that was automatically generated during saving if needed
-#PISA_prepared.drop(PISA_prepared.columns[[0]], axis = 1, inplace = True)
 
 #%% split
 
@@ -39,7 +32,6 @@ y = y.to_frame()
 X_train, X_test_val_1_val_2, y_train, y_test_val_1_val_2 = train_test_split(X, y, test_size=3/10, random_state=42)
 X_test_val_1,X_val_2, y_test_val_1, y_val_2= train_test_split(X_test_val_1_val_2,y_test_val_1_val_2, test_size=1/3, random_state=42)
 X_test, X_val_1, y_test, y_val_1 = train_test_split(X_test_val_1, y_test_val_1, test_size=1/2, random_state=42)
-
 
 X_test.to_csv("data/X_test.csv") # 70000
 y_test.to_csv("data/y_test.csv")

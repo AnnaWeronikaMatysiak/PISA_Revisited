@@ -4,12 +4,6 @@ Created on Thu Mar 31 15:14:00 2022
 
 @author: Anna
 """
-
-"""
-TO DO:
-- visualisation of error measures (look at session 5)
-"""
-
 #%% call setup file
 import runpy
 runpy.run_path(path_name = '/0_setup.py')
@@ -24,12 +18,6 @@ from sklearn.metrics import r2_score
 import joblib
 
 #%% read in data
-
-#becuase y is an array, code to transform it to dataframe:
-#y_train=y_train.to_frame()
-#code to check if any of the columns have NAs:
-#y_train.isnull().any()
-
 X_train = pd.read_csv("data/X_train.csv")
 y_train = pd.read_csv("data/y_train.csv")
 
@@ -39,17 +27,27 @@ y_val_1 = pd.read_csv("data/y_val_1.csv")
 X_val_2 = pd.read_csv("data/X_val_2.csv") 
 y_val_2 = pd.read_csv("data/y_val_2.csv")
 
+#%% droping first column
+def drop_first_entry(df):
+    df.drop(df.columns[[0]], axis = 1, inplace = True)
 
+drop_first_entry(X_train)
+drop_first_entry(X_val_1)
+drop_first_entry(X_val_2)
+
+X_train.shape
+X_val_2.shape
+X_val_1.shape
 #%% linear regression
 
-#training
+# training
 lin_reg= LinearRegression()
 lin_reg.fit(X_train, y_train)   
 
 lin_reg.coef_
 lin_reg.intercept_
 
-#predicting
+# predicting
 y_predicted=lin_reg.predict(X_val_1)
 
 #evaluation
@@ -66,11 +64,10 @@ joblib.dump(lin_reg, "models/LinearRegression.pkl")
 # lin_reg = joblib.load("models/LinearRegression.pkl")
 
 #%%Saving Baseline Metrics in Table
-d = {'Model': ['Baseline: Linear Regression'], 'RMSE': [round(rmse, 4)], 'MAE': [round(mae, 4)], 'R2': [round(r2, 4)]}
+d = {'Model': ['Baseline: Linear Regression'], 'RMSE': [round(rmse, 4)], 'MAE': [round(mae, 4)], 'R2': [round(r_2, 4)]}
 table_baseline = pd.DataFrame(data=d)
 table_baseline
 table_baseline.style.to_latex("baseline_table.tex", index=False, caption="Baseline Evaluation Metrics")
-
 
 #%% visualizing baseline
 

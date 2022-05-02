@@ -3,34 +3,28 @@
 """
 Created on Fri Apr 22 14:56:52 2022
 
-@author: Jo
+@author: Jo&Max
 """
 
-#%% call setup file
+#%% import packages
 
-import openpyxl
+import pandas as pd
 import runpy
 import numpy as np
-import matplotlib 
 import matplotlib.pyplot as plt
-
+#%% call setup file
 runpy.run_path(path_name = '0_setup.py')
 
 # imports sys, sklearn, numpy, os, matplotlib, pathlib
 # checks versions, sets wd, sets random.seed 42, specifies plots
 # defines function save_fig()
 
-runpy.run_path(path_name = 'functions.py')
-
-# runs preprocessing functions
-
-#%% import additional packages
-
-import pandas as pd
-
+#%% runs preprocessing functions
+runpy.run_path(path_name = '1a_functions.py')
 
 #%% read in data
 
+# raw data from pisa website
 PISA_raw = pd.read_csv("/data/PISA_student_data.csv")
 
 # rename target variable "PV1READ" = "read_score"
@@ -73,9 +67,6 @@ plt.xlabel('Percentage Missingness')
 plt.ylabel('Number of Covariates')
 plt.title('Distribution of Missingness of Covariates',fontweight ="bold")
 plt.show()
-
-# save plot (0 axis???)
-save_fig("Distribution of Missingness of Covariates")
 
 
 #%% imputation (still change names)

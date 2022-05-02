@@ -5,20 +5,19 @@ Created on Tue Apr 12 23:30:45 2022
 
 @author: Jo
 """
-
-import sklearn
+#%% import packages
 import numpy as np
 import os
 import pandas as pd
 
-# set working directory
+#%% set working directory
 os.getcwd()
 os.chdir('/Volumes/GoogleDrive/My Drive/PISA_Revisited/')
 
 # to make the output stable across runs
 np.random.seed(42)
 
-# descriptions see preprocessing file
+#%% descriptions see preprocessing file
 
 def rename_read_score_female(dataframe):
     dataframe = dataframe.rename(columns = {'PV1READ':'read_score', 'ST004D01T':'female'}, inplace = True)

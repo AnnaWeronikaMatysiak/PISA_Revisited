@@ -6,15 +6,6 @@ Created on Thu Apr  7 13:31:29 2022
 @author: Jo&Anna
 """
 
-"""
-TO DO - for both files 4 and 5:
-Max/together:
-- performance plots
-- evaluate on the test
-- present the 10 best predictors of the best model
-- if we have time: combine models in an ensemble (like in the lab)
-"""
-
 #%% necessary packages
 
 import pandas as pd
@@ -41,7 +32,7 @@ runpy.run_path(path_name = '/0_setup.py')
 
 #%% read in data
 X_test = pd.read_csv("/My Drive/PISA_Revisited/data/X_test.csv") 
-#y_test = pd.read_csv("/My Drive/PISA_Revisited/data/y_test.csv")
+y_test = pd.read_csv("/My Drive/PISA_Revisited/data/y_test.csv")
 
 X_train = pd.read_csv("data/X_train.csv")
 y_train = pd.read_csv("data/y_train.csv")
@@ -62,16 +53,15 @@ drop_first_entry(X_val_1)
 drop_first_entry(X_test)
 drop_first_entry(X_val_2)
 
-
 #%% initial ridge regression - mid term report
-#training
+# training
 ridge_reg = RidgeCV(alphas=[1e-3, 1e-2, 1e-1, 1, 10], normalize=True)
 ridge_reg_model=ridge_reg.fit(X_train, y_train)
 
-#evaluation
+# evaluation
 predicted_ridge=ridge_reg.predict(X_val_1)
 
-#to check which alpha was used
+# to check which alpha was used
 ridge_reg_model.alpha_
 rmse_ridge= np.sqrt(mean_squared_error(y_val_1, predicted_ridge))
 mae_ridge=mean_absolute_error(y_val_1, predicted_ridge)
@@ -82,21 +72,21 @@ print('MAE_linear:', mae_ridge) # result: MAE=54.39827907320501
 print('R_2_linear:', r_2_ridge) #result: R_2=0.5922063884528036
 
 #%% simple ridge regression
-#trianing
+# trianing
 ridge= Ridge()
 ridge_model=ridge.fit(X_train, y_train)
 
-#predicting
+# predicting
 predicted_ridge=ridge_model.predict(X_val_1)
 
-#evaluation
+# evaluation
 rmse_ridge= np.sqrt(mean_squared_error(y_val_1, predicted_ridge))
 print('RMSE_ridge: ',rmse_ridge) #result: 68.51986262316217
 
-#saving model
+# saving model
 joblib.dump(ridge_model, "models/ridge.pkl")
 
-#cross-validation on the ridge
+# cross-validation on the ridge
 cv = RepeatedKFold(n_splits=10, n_repeats=3, random_state=1)
 scores = cross_val_score(ridge, X_val_1, y_val_1, scoring='neg_mean_squared_error', cv=cv, n_jobs=-1)
 
@@ -169,6 +159,10 @@ joblib.dump(poly_reg_w_ridge, "models/poly_reg_w_ridge.pkl")
 
 #%% fine-tuning polynomial model with ridge 
 
+# in all configurations, also on the GPU server it was too big and did kill the kernel
+# would be interesting to use in the future higher degrees of polynomial as well as tuning
+
+"""
 model2=make_pipeline(Ridge())
 
 #putting together a parameter grid to search over using grid search
@@ -187,6 +181,6 @@ print(gs2.best_estimator_.get_params()["ridge"])
 print('Best Score: %s' % np.sqrt(-gs2.best_score_))
 print('Best Hyperparameters: %s' % gs2.best_params_)
 
-#%%save the model
+#save the model
 final_poly_ridge= gs2.best_estimator_
-joblib.dump(final_poly_ridge, "models/final_poly_ridge_tuned.pkl")
+joblib.dump(final_poly_ridge, "models/final_poly_ridge_tuned.pkl")"""
