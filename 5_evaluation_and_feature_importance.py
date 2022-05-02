@@ -30,6 +30,10 @@ final_model = joblib.load("models/final_ridge_model.pkl")
 # prediction for X_test
 y_pred = final_model.predict(X_test)
 
+# save predictions as csv
+# y_pred_values = pd.DataFrame(y_pred)
+# y_pred_values.to_csv("data/y_pred.csv")
+
 # evaluate
 lin_reg_mse = mean_squared_error(y_test, y_pred)
 lin_reg_rmse = np.sqrt(lin_reg_mse)

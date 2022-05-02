@@ -92,8 +92,7 @@ extra_rmse = np.sqrt(extra_mse)
 
 extra_rmse # result: 70.29067166539122
 
-# saves the model 
-
+# save the model 
 joblib.dump(extra_reg, "models/ExtraTrees.pkl")
 
 # load the model if needed
@@ -288,7 +287,7 @@ joblib.dump(forest_reg, "models/ExtraTrees_tuned_2.pkl")
 ################################
 
 
-"""# fourth try with more trees
+# fourth try with more trees
 
 param_grid = [
     {"n_estimators": [1000], "max_features": [100]},
@@ -315,15 +314,15 @@ for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
 joblib.dump(forest_reg, "models/ExtraTrees_tuned.pkl")
 
 # load the model if needed
-# RandomForest_loaded=joblib.load("models/ExtraTree_tuned.pkl")
-"""
+# RandomForest_loaded=joblib.load("models/ExtraTrees_tuned.pkl")
+
 
 
 
 ##################################
 
 
-# fifth try with even more trees
+"""# fifth try with even more trees
 
 param_grid = [
     {"n_estimators": [10000], "max_features": [100]},
@@ -357,3 +356,4 @@ joblib.dump(extra_tuned, "models/ExtraTrees_tuned.pkl")
 # the step from 1,000 to 10,000 only brought an extremely small benefit. 
 # So probably more trees won't help anymore.
 
+"""
