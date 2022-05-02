@@ -27,7 +27,7 @@ drop_first_entry(y_test)
 import joblib
 final_model = joblib.load("models/final_ridge_model.pkl")
 
-# prediction for X_val_1
+# prediction for X_test
 y_pred = final_model.predict(X_test)
 
 # evaluate
@@ -36,6 +36,25 @@ lin_reg_rmse = np.sqrt(lin_reg_mse)
 print(lin_reg_rmse)
  # result: 69.0934592678894
 
+
+#%% plotting predicted vs. actual values
+
+plt.figure(figsize=(10,10))
+plt.scatter(y_test, y_pred, c='crimson', alpha=0.2)
+plt.yscale('log')
+plt.xscale('log')
+
+p1 = max(max(y_pred), max(y_test)
+p2 = min(min(y_pred), min(y_test)
+plt.plot([p1, p2], [p1, p2], 'red')
+plt.xlabel('True Values', fontsize=15)
+plt.ylabel('Predictions', fontsize=15)
+plt.axis('equal')
+plt.title('Scatterplot of Predicted and True Values',fontdict={'fontsize': 20})
+plt.show()
+
+#y_predd = pd.DataFrame(data=y_predicted)
+#y_predd.drop([0,], axis=1, inplace=True)
 
 #%% fit model on boys and girls subset and check feature importance to find the best predictors
 
