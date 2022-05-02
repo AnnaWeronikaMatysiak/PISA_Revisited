@@ -68,15 +68,26 @@ final_model = joblib.load("models/final_ridge_model.pkl")
 # fit the model to girls
 final_model.fit(X_female, y_female)
 
-# feature importance
-feature_importances = final_model.feature_importances_
-feature_importances
+# choose ridge regression as a step in the model pipeline and get coefficients
+coefficients = final_model.named_steps['ridge'].coef_
 
-# get feature names and combine them with the coefficients, save as csv
+# reshape row to column and get feature names
+coefficients = coefficients.reshape(-1, 1)
 feature_names = X_female.columns
-predictors_girls = sorted(zip(feature_importances, feature_names), reverse=True)
-predictors_girls = pd.DataFrame(predictors_girls, columns = ['coefficient', 'predictor'])
-predictors_girls.to_csv("data/predictors_girls.csv")
+
+# generate dataframe combining coefficients and column names
+predictors = pd.DataFrame(coefficients, feature_names)
+zipped = list(zip(feature_names, coefficients))
+predictors = pd.DataFrame(zipped, columns=["feature", "coefficient"])
+
+# sort by the absolute value of coefficients
+predictors = predictors.sort_values('coefficient', ascending=False, key=abs)
+
+# filter out country-ID's (we are interested in individual features of students)
+predictors_female = predictors[predictors["feature"].str.contains("CNTRYID")==False]
+
+# save as csv
+predictors_female.to_csv("data/predictors_girls.csv")
 
 
 #####################################
@@ -84,15 +95,63 @@ predictors_girls.to_csv("data/predictors_girls.csv")
 # fit the model to boys
 final_model.fit(X_male, y_male)
 
-# feature importance
-feature_importances = ExtraTrees_loaded.feature_importances_
-feature_importances
+# choose ridge regression as a step in the model pipeline and get coefficients
+coefficients = final_model.named_steps['ridge'].coef_
 
-# get feature names and combine them with the coefficients, save as csv
+# reshape row to column and get feature names
+coefficients = coefficients.reshape(-1, 1)
 feature_names = X_male.columns
-predictors_boys = sorted(zip(feature_importances, feature_names), reverse=True)
-predictors_boys = pd.DataFrame (predictors_boys, columns = ['coefficient', 'predictor'])
-predictors_boys.to_csv("data/predictors_boys.csv")
+
+# generate dataframe combining coefficients and column names
+predictors = pd.DataFrame(coefficients, feature_names)
+zipped = list(zip(feature_names, coefficients))
+predictors = pd.DataFrame(zipped, columns=["feature", "coefficient"])
+
+# sort by the absolute value of coefficients
+predictors = predictors.sort_values('coefficient', ascending=False, key=abs)
+
+# filter out country-ID's (we are interested in individual features of students)
+predictors_male = predictors[predictors["feature"].str.contains("CNTRYID")==False]
+
+# save as csv
+predictors_male.to_csv("data/predictors_boys.csv")
+
+
+
+
+#%% for interpretation purposes: display predictors of genders together
+
+PISA_prepared = pd.read_csv("data/PISA_prepared.csv")
+PISA_prepared.drop(PISA_prepared.columns[[0]], axis = 1, inplace = True)
+X = PISA_prepared.drop(columns=["read_score"])
+y = PISA_prepared["read_score"]
+y = y.to_frame()
+
+# fit the model to all students
+final_model.fit(X, y)
+
+# choose ridge regression as a step in the model pipeline and get coefficients
+coefficients = final_model.named_steps['ridge'].coef_
+
+# reshape row to column and get feature names
+coefficients = coefficients.reshape(-1, 1)
+feature_names = X.columns
+
+# generate dataframe combining coefficients and column names
+predictors = pd.DataFrame(coefficients, feature_names)
+zipped = list(zip(feature_names, coefficients))
+predictors = pd.DataFrame(zipped, columns=["feature", "coefficient"])
+
+# sort by the absolute value of coefficients
+predictors = predictors.sort_values('coefficient', ascending=False, key=abs)
+
+# filter out country-ID's (we are interested in individual features of students)
+predictors_all = predictors[predictors["feature"].str.contains("CNTRYID")==False]
+
+# save as csv
+predictors_all.to_csv("data/predictors_boys.csv")
+
+
 
 
 
