@@ -6,11 +6,7 @@ Created on Thu Apr 28 16:11:16 2022
 @author: Jo
 """
 
-""" 
-- take our best model
-- train it on the girls and boys subsets (?)
-- look at the strongest predictors
-"""
+#%% packages
 
 import pandas as pd
 
@@ -87,7 +83,7 @@ predictors = predictors.sort_values('coefficient', ascending=False, key=abs)
 predictors_female = predictors[predictors["feature"].str.contains("CNTRYID")==False]
 
 # save as csv
-predictors_female.to_csv("data/predictors_girls.csv")
+predictors_female.to_csv("data/predictors_female.csv")
 
 
 #####################################
@@ -114,8 +110,7 @@ predictors = predictors.sort_values('coefficient', ascending=False, key=abs)
 predictors_male = predictors[predictors["feature"].str.contains("CNTRYID")==False]
 
 # save as csv
-predictors_male.to_csv("data/predictors_boys.csv")
-
+predictors_male.to_csv("data/predictors_male.csv")
 
 
 
@@ -149,7 +144,7 @@ predictors = predictors.sort_values('coefficient', ascending=False, key=abs)
 predictors_all = predictors[predictors["feature"].str.contains("CNTRYID")==False]
 
 # save as csv
-predictors_all.to_csv("data/predictors_boys.csv")
+predictors_all.to_csv("data/predictors_all.csv")
 
 
 
