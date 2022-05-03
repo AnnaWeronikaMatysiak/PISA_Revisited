@@ -8,6 +8,7 @@ Created on Thu Apr 28 16:11:16 2022
 
 #%% packages
 
+from matplotlib.pyplot import xticks, yticks
 import pandas as pd
 
 #%% evaluation of the best model (ridge tuned) on the test set
@@ -43,25 +44,45 @@ print(lin_reg_rmse)
 
 #%% plotting predicted vs. actual values
 
+
+y_test = pd.read_csv('/Volumes/GoogleDrive-106144065181021449893/Meine Ablage/Data/y_test.csv')
+y_pred = pd.read_csv('/Volumes/GoogleDrive-106144065181021449893/Meine Ablage/Data/y_pred.csv')
+
 drop_first_entry(y_pred)
 drop_first_entry(y_test)
 
-plt.figure(figsize=(10,10))
-plt.scatter(y_test, y_pred, c='crimson', alpha=0.2)
-plt.yscale('log')
-plt.xscale('log')
+merged = []
+merged["y_test"] = y_test
 
-p1 = max(max(y_pred), max(y_test)
-p2 = min(min(y_pred), min(y_test)
-plt.plot([p1, p2], [p1, p2], 'red')
-plt.xlabel('True Values', fontsize=15)
-plt.ylabel('Predictions', fontsize=15)
-plt.axis('equal')
-plt.title('Scatterplot of Predicted and True Values',fontdict={'fontsize': 20})
+y_pred["y_test"] = y_test
+
+#Matplotlib Version (incomplete)
+# plt.figure(figsize=(10,10))
+# plt.scatter(y_test, y_pred, c='crimson', alpha=0.2)
+# plt.yscale('log')
+# plt.xscale('log')
+
+# p1 = max(max(y_pred), max(y_test)
+# p2 = min(min(y_pred), min(y_test)
+# plt.plot([p1, p2], [p1, p2], 'red')
+# plt.xlabel('True Values', fontsize=15)
+# plt.ylabel('Predicted Values', fontsize=15)
+# plt.xticks(ticks=500, 100000)
+# plt.yticks(ticks=500, 10000)
+# plt.axis('equal')
+# plt.title('Scatterplot of Predicted and True Values',fontdict={'fontsize': 20})
+# plt.show()
+
+#Seaborn Version (better)
+scatter = sns.lmplot(x = '0', y = 'y_test' , data = y_pred, scatter_kws={'alpha':0.2}, line_kws={'color': 'red'})
+scatter.set(yticklabels=[]) 
+scatter.set(xticklabels=[]) 
+plt.title('Scatterplot of Predicted and True Values')
+plt.xlabel('True Values')
+plt.ylabel('Predictions')
 plt.show()
+plt.savefig('seaborn_pred.png',dpi='400')
 
-#y_predd = pd.DataFrame(data=y_predicted)
-#y_predd.drop([0,], axis=1, inplace=True)
 
 #%% fit model on boys and girls subset and check feature importance to find the best predictors
 
