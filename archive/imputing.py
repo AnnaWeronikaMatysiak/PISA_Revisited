@@ -5,19 +5,6 @@ Created on Mon Apr 11 17:01:27 2022
 
 @author: Jo
 """
-"""
-
-To Do's'
-- create imputing and compare different approaches (on different variables?)
-
-Problems
-- we should maybe not decide for one single imputer for everything - how do we decide this?
-
-Endproduct should be a dataframe saved to csv without NA's. 
-The file takes the PISA_reduced.csv file as a starting point 
-
-"""
-
 
 #%% call setup file
 
@@ -150,19 +137,11 @@ y_full = PISA_reduced_sample["read_score"]
 
 n_samples, n_features = X_full.shape
 
-# ...
-#
-#
-
 #%% alternative multivariate imputation (links above, this is only the beginning)
 
 # itearative imputation (k nearest neighbor or random forest - where is linear?) check out these links
 # https://scikit-learn.org/stable/modules/impute.html
 # https://scikit-learn.org/stable/auto_examples/impute/plot_missing_values.html#sphx-glr-auto-examples-impute-plot-missing-values-py
-
-# ...
-#
-#
 
 #%% simple and fast version (univariate)
 
@@ -175,11 +154,7 @@ imputer.statistics_
 PISA_reduced_sample.median().values
 
 X = imputer.transform(PISA_sample_100)
-
-# This doesn't work yet but I don't know why
 # PISA_sample_transformed = pd.DataFrame(X, columns = PISA_sample_100.comlumns, index = PISA_sample_100.index)
-
-#%% any other preprocessing (pattern missingness? etc.)
 
 
 
