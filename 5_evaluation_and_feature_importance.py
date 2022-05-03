@@ -43,6 +43,9 @@ print(lin_reg_rmse)
 
 #%% plotting predicted vs. actual values
 
+drop_first_entry(y_pred)
+drop_first_entry(y_test)
+
 plt.figure(figsize=(10,10))
 plt.scatter(y_test, y_pred, c='crimson', alpha=0.2)
 plt.yscale('log')
