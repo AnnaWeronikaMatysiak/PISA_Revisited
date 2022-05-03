@@ -114,7 +114,7 @@ predictors_female.to_csv("data/predictors_female.csv")
 # fit the model to boys
 final_model.fit(X_male, y_male)
 
-# choose ridge regression as a step in the model pipeline and get coefficients
+# choose ridge regression as a step in the model pipeline to get coefficients
 coefficients = final_model.named_steps['ridge'].coef_
 
 # reshape row to column and get feature names

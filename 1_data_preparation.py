@@ -12,6 +12,7 @@ import pandas as pd
 import runpy
 import numpy as np
 import matplotlib.pyplot as plt
+
 #%% call setup file
 runpy.run_path(path_name = '0_setup.py')
 
@@ -19,12 +20,13 @@ runpy.run_path(path_name = '0_setup.py')
 # checks versions, sets wd, sets random.seed 42, specifies plots
 # defines function save_fig()
 
-#%% runs preprocessing functions
+#%% run preprocessing functions
+
 runpy.run_path(path_name = '1a_functions.py')
 
 #%% read in data
 
-# raw data from pisa website
+# read in raw data from pisa website
 PISA_raw = pd.read_csv("/data/PISA_student_data.csv")
 
 # rename target variable "PV1READ" = "read_score"
@@ -187,7 +189,7 @@ PISA_prepared.to_csv("data/PISA_prepared.csv")
 
 #%% create boys and girls subsets for feature importance comparison
 
-# filter by gender (see which is which later...)
+# filter by gender
 PISA_female = PISA_prepared[PISA_prepared["gender"] == 0] 
 PISA_male = PISA_prepared[PISA_prepared["gender"] == 1]
 
