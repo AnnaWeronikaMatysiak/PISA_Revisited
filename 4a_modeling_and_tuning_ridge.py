@@ -159,10 +159,10 @@ joblib.dump(poly_reg_w_ridge, "models/poly_reg_w_ridge.pkl")
 
 #%% fine-tuning polynomial model with ridge 
 
-# in all configurations, also on the GPU server it was too big and did kill the kernel
+# in all configurations, also on the GPU server it was too big to check more parameters and higher degrees
 # would be interesting to use in the future higher degrees of polynomial as well as tuning
 
-"""
+
 model2=make_pipeline(Ridge())
 
 #putting together a parameter grid to search over using grid search
@@ -183,4 +183,11 @@ print('Best Hyperparameters: %s' % gs2.best_params_)
 
 #save the model
 final_poly_ridge= gs2.best_estimator_
-joblib.dump(final_poly_ridge, "models/final_poly_ridge_tuned.pkl")"""
+#joblib.dump(final_poly_ridge, "models/final_poly_ridge_tuned.pkl")
+
+#RESULTS:
+#Ridge(alpha=10)
+#Best Score: 80.66971028026359
+#Best Hyperparameters: {'ridge__alpha': 10}
+
+
