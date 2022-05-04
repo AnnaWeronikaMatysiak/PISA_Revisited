@@ -11,6 +11,7 @@ Created on Thu Apr 28 16:11:16 2022
 from matplotlib.pyplot import xticks, yticks
 import pandas as pd
 
+
 #%% evaluation of the best model (ridge tuned) and the baseline (Linear Regression) on the test set 
 
 X_test = pd.read_csv("data/X_test.csv")
@@ -23,23 +24,34 @@ def drop_first_entry(df):
 drop_first_entry(X_test)
 drop_first_entry(y_test)
 
-# evaluate the best model on the test set... see the final score!
+# concatenate train, val_1 and val_2 in order to refit the best model and the baseline model
+X_frames = [X_train, X_val_1, X_val_2]
+y_frames = [y_train, y_val_1, y_val_2]
+
+X = pd.concat(X_frames)
+y = pd.concat(y_frames)
+
+############################
+
+# evaluate the best model on the test set
 # load the best model
 import joblib
 final_model = joblib.load("models/final_ridge_model.pkl")
 
+# refit the model on the whole dataset (all observations except those in the test set)
+final_model.fit(X, y)
+
 # prediction for X_test
 y_pred = final_model.predict(X_test)
-
-# save predictions as csv
-# y_pred_values = pd.DataFrame(y_pred)
-# y_pred_values.to_csv("data/y_pred.csv")
 
 # evaluate
 lin_reg_mse = mean_squared_error(y_test, y_pred)
 lin_reg_rmse = np.sqrt(lin_reg_mse)
 print(lin_reg_rmse)
- # result: 69.0934592678894
+ # result: 68.29542924020488 (old fit: 69.0934592678894)
+ 
+# save final model 
+joblib.dump(final_model, "models/final_ridge_model.pkl")
  
 ############################
 
@@ -48,15 +60,24 @@ print(lin_reg_rmse)
 import joblib
 baseline = joblib.load("models/LinearRegression.pkl")
 
+# refit the model on the whole dataset (all observations except those in the test set)
+baseline.fit(X, y)
+
 # prediction for X_test
 y_pred = baseline.predict(X_test)
+
+# save predictions as csv
+y_pred_values = pd.DataFrame(y_pred)
+y_pred_values.to_csv("data/y_pred.csv")
 
 # evaluate
 lin_reg_mse = mean_squared_error(y_test, y_pred)
 lin_reg_rmse = np.sqrt(lin_reg_mse)
 print(lin_reg_rmse)
- # result: 68.31392796584475
-
+ # result: 68.2948916423734 (old fit: 68.31392796584475)
+ 
+# save final model
+# joblib.dump(baseline, "models/baseline_final.pkl")
 
 #%% plotting predicted vs. actual values
 
@@ -120,7 +141,7 @@ drop_first_entry(y_male)
 
 
 import joblib
-final_model = joblib.load("models/final_ridge_model.pkl")
+final_model = joblib.load("models/baseline_final.pkl")
 
 ####################################
 
@@ -128,7 +149,7 @@ final_model = joblib.load("models/final_ridge_model.pkl")
 final_model.fit(X_female, y_female)
 
 # choose ridge regression as a step in the model pipeline and get coefficients
-coefficients = final_model.named_steps['ridge'].coef_
+coefficients = final_model.coef_
 
 # reshape row to column and get feature names
 coefficients = coefficients.reshape(-1, 1)
@@ -155,7 +176,7 @@ predictors_female.to_csv("data/predictors_female.csv")
 final_model.fit(X_male, y_male)
 
 # choose ridge regression as a step in the model pipeline to get coefficients
-coefficients = final_model.named_steps['ridge'].coef_
+coefficients = final_model.coef_
 
 # reshape row to column and get feature names
 coefficients = coefficients.reshape(-1, 1)
