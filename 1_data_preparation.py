@@ -71,14 +71,14 @@ plt.title('Distribution of Missingness of Covariates',fontweight ="bold")
 plt.show()
 
 
-#%% imputation (still change names)
+#%% imputation
 
 # type "pip install missingpy" in the console for installation
 from missingpy import MissForest
 
 X = PISA_selection
 
-# fast version for now
+# medium strict parameters for runtime-quality-trade-off
 imputer = MissForest(max_iter = 4, n_estimators = 10, max_features = 10, n_jobs = -1, random_state = 42)
 
 # cat_vars : int or array of ints containing column indices of categorical variable(s)

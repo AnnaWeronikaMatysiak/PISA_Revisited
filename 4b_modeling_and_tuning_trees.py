@@ -74,35 +74,11 @@ joblib.dump(forest_reg, "models/RandomForests.pkl")
 # load the model if needed
 forest_reg = joblib.load("models/RandomForests.pkl")
 
-#%% ExtraTrees (Extremely Randomized Trees)
-
-# trades more bias for a lower variance, much faster to train than RandomForests
-extra_reg =  ExtraTreesRegressor()
-
-# fit the model to our training data
-extra_reg.fit(X_train, y_train)
-
-# prediction for X_val_1
-y_pred = extra_reg.predict(X_val_1)
-
-# evaluate
-extra_mse = mean_squared_error(y_val_1, y_pred)
-print(extra_mse)
-extra_rmse = np.sqrt(extra_mse)
-
-extra_rmse # result: 70.29067166539122
-
-# save the model 
-joblib.dump(extra_reg, "models/ExtraTrees.pkl")
-
-# load the model if needed
-extra_reg = joblib.load("models/ExtraTrees.pkl")
-
 
 #%% Fine Tuning RandomForest (best model as code, rest as comments)
 
 # n_estimators: number of trees in the forest. default = 100
-# max_features: number of features to consider when looking for the best split. default = 
+# max_features: number of features to consider when looking for the best split. default = n 
 
 """param_grid_1 = [
     {"n_estimators": [50, 100, 150], "max_features": [50, 100, 205]},
@@ -182,6 +158,31 @@ joblib.dump(forest_tuned, "models/RandomForest_tuned.pkl")
 
 # load the model if needed
 # RandomForest_loaded=joblib.load("models/RandomForests_tuned.pkl")""
+
+
+#%% ExtraTrees (Extremely Randomized Trees)
+
+# trades more bias for a lower variance, much faster to train than RandomForests
+extra_reg =  ExtraTreesRegressor()
+
+# fit the model to our training data
+extra_reg.fit(X_train, y_train)
+
+# prediction for X_val_1
+y_pred = extra_reg.predict(X_val_1)
+
+# evaluate
+extra_mse = mean_squared_error(y_val_1, y_pred)
+print(extra_mse)
+extra_rmse = np.sqrt(extra_mse)
+
+extra_rmse # result: 70.29067166539122
+
+# save the model 
+joblib.dump(extra_reg, "models/ExtraTrees.pkl")
+
+# load the model if needed
+extra_reg = joblib.load("models/ExtraTrees.pkl")
 
 
 #%% Fine Tuning ExtraTrees (best model as code, rest as comments)
