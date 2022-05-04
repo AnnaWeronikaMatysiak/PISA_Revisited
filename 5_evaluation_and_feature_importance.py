@@ -11,7 +11,7 @@ Created on Thu Apr 28 16:11:16 2022
 from matplotlib.pyplot import xticks, yticks
 import pandas as pd
 
-#%% evaluation of the best model (ridge tuned) on the test set
+#%% evaluation of the best model (ridge tuned) and the baseline (Linear Regression) on the test set 
 
 X_test = pd.read_csv("data/X_test.csv")
 y_test = pd.read_csv("data/y_test.csv")
@@ -40,6 +40,22 @@ lin_reg_mse = mean_squared_error(y_test, y_pred)
 lin_reg_rmse = np.sqrt(lin_reg_mse)
 print(lin_reg_rmse)
  # result: 69.0934592678894
+ 
+############################
+
+# evaluation of the baseline
+# load the baseline
+import joblib
+baseline = joblib.load("models/LinearRegression.pkl")
+
+# prediction for X_test
+y_pred = baseline.predict(X_test)
+
+# evaluate
+lin_reg_mse = mean_squared_error(y_test, y_pred)
+lin_reg_rmse = np.sqrt(lin_reg_mse)
+print(lin_reg_rmse)
+ # result: 68.31392796584475
 
 
 #%% plotting predicted vs. actual values
