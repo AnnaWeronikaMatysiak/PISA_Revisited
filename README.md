@@ -1,6 +1,8 @@
 # PISA Revisited
 
 ## Summary 
+
+### Background
 The OCED’s Programme for International Student Assessment (PISA) has consistently found that girls outperform boys in reading, among other domains, and that this gender gap is large, worldwide, and persistent throughout primary and secondary schooling. Cited literature highlights how girls’ academic strength relative to their male peers may impact their confidence and interests across subjects, thus explaining differences in girls’ career aspirations, such as a lower likelihood of joining STEM fields.
 
 This project uses a machine learning framework to identify the strongest predictors of reading scores from the complete 2018 PISA dataset for boys and girls. Using the SKLearn library for Python, a multiple regression was trained on the data and used baseline model, with subsequent models introducing a Ridge penalty, polynomial regression as well as a Random Forest Regressor. Regressions with a Ridge penalty, and polynomial performed worse than the baseline regression while an Extra Trees Regressor slightly improved on the results of the Random Forest algorithm.
