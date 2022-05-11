@@ -45,18 +45,19 @@ In order to retain as much of the original data, independent variables were impu
 The final result yielded a dataset of 205 features with high internal validity, which were used as independent variables to predict the continuous variable reading score, with a mean of 500 points with approximately 100 points of standard deviation.  Due to a large number of observations, the project employed a reduced testing-training set split from 80% to 70% training data, 10% testing data and two validation sets with 10% of the data each. </div>
 
 
-```{r fig1, eval = TRUE, echo = FALSE, out.width = "100%", fig.cap = "Overview of variables"}
-knitr::include_graphics("figures/Table_variables_overview.png")
-```
+<p align="center">
+![](figures/Table_variables_overview.png){ width=85% }
+</p>
+
 
 ## Method 
 
 <div style="text-align: justify"> After preparing and splitting the data a few models were trained.  A linear regression model served as the baseline for the further analysis. This model along with ridge penalty and ridge with polynomial data regressions were firstly trained on the training data. Next, we designed and compared the RMSE results of the Random Forest and Extra Trees. In the second stage all models were fine-tuned on the validation sets and then, the best performing models were tested on the bigger dataset.  After comparing the results, in order to combine the strengths of different model approaches, the best performing linear regression model was evaluated with the best performing tree-based model in an ensemble. This led us to select the best performing model and select the most important predictors for boys and girls. Figure 2 presents all the steps we have done during the project. </div>
 
 
-```{r fig2, eval = TRUE, echo = FALSE, out.width = '50%', fig.cap = "Proposed method"}
-knitr::include_graphics("figures/methodology_steps.png")
-```
+<p align="center">
+![](figures/methodology_steps.png){ width=85% }
+</p>
 
 ## Results
 
@@ -81,10 +82,9 @@ knitr::include_graphics("figures/feature_importance_venn.png")
 
 Moreover, the scatterplot in Fig. 5  demonstrates the model’s predictions for reading scores of individual students. While perfect alignment with the red line represents the hypothetical perfect prediction of actual scores, deviations from the red line represent a larger prediction error. Judging from the shape of the scatterplot, the model predicts values quite uniformly across for different reading scores, however, there is a slight tendency to underestimate predictions for low-performing students and a tendency of the model to overestimate the scores of high-performing students. </div>
 
-```{r fig5, eval = TRUE, echo = FALSE, out.width = '50%', fig.cap = "Predictions for reading scores of individual students"}
-knitr::include_graphics("figures/scatter_plot.png")
-```
-
+<p align="center">
+![](figures/scatter_plot.png){ width=85% }
+</p>
 
 ## Conclusion
 <div style="text-align: justify"> The gender differences in predictors suggest that boys and girls respond to their learning environment differently. Designing gender-specific interventions and having an increased awareness of how these factors are expected to impact reading scores differently, may be a key strategy in boosting reading scores of low performing boys in particular. 
