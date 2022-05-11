@@ -1,7 +1,7 @@
 ---
 title: "PISA REVISITED"
 description: |
- This is a project that applies newest machine learning techniques to PISA data in order to discover the reading scores predictors for boys and girls
+ This project uses a machine learning framework to identify the strongest predictors of reading scores from the complete 2018 PISA dataset for boys and girls.
 authors: 
   - name: Johana Mehler, Anna Weronika Matysiak, Max Eckert
 
@@ -14,7 +14,7 @@ repository_url: https://github.com/AnnaWeronikaMatysiak/PISA_Revisited
 output: 
   distill::distill_article: 
     self_contained: false
-preview: figures/BERTfig3.png
+preview: figures/feature_importance_venn.png
 bibliography: bibliography.bib
 ---
 
@@ -27,23 +27,25 @@ library(reticulate) # For rendering Python code
 
 ## Abstract 
 
-<div style="text-align: justify"> The OCED’s Programme for International Student Assessment (PISA) has consistently found that girls outperform boys in reading, among other domains, and that this gender gap is large, worldwide, and persistent throughout primary and secondary schooling. Cited literature highlights how girls’ academic strength relative to their male peers may impact their confidence and interests across subjects, thus explaining differences in girls’ career aspirations, such as a lower likelihood of joining STEM fields. While previous research has observed a selection of predictors for reading scores in single countries, this project used machine learning methods to identify the strongest predictors of reading scores from the complete 2018 PISA dataset, distinguished by gender. After fitting and validating different models, the baseline linear regression, and regression with an added ridge penalty yielded similarly good results and produced different predictors for girls and boys, which supports the value of gender-sensitive education policies. </div>
+<div style="text-align: justify"> *The OCED’s Programme for International Student Assessment (PISA) has consistently found that girls outperform boys in reading, among other domains, and that this gender gap is large, worldwide, and persistent throughout primary and secondary schooling. Cited literature highlights how girls’ academic strength relative to their male peers may impact their confidence and interests across subjects, thus explaining differences in girls’ career aspirations, such as a lower likelihood of joining STEM fields. While previous research has observed a selection of predictors for reading scores in single countries, this project used machine learning methods to identify the strongest predictors of reading scores from the complete 2018 PISA dataset, distinguished by gender. After fitting and validating different models, the baseline linear regression, and regression with an added ridge penalty yielded similarly good results and produced different predictors for girls and boys, which supports the value of gender-sensitive education policies.* </div>
 
 
 ## Problem
 
-<div style="text-align: justify"> The OECD's Programme for International Student Assessment (PISA) has consistently found that girls outperform boys in reading, among other domains, and that this gender gap is large, worldwide, and persistent throughout primary and secondary schooling. Recent literature highlights how girls’ academic strength relative to their male peers may impact their confidence and interests across subjects, thus explaining differences in girls’ career aspira- tions, such as a lower likelihood of joining STEM fields. While previous research has observed a selection of predictors for reading scores in single countries, the project “PISA Revisited“ examines predictors for reading scores of 15-year old boys and girls across all PISA countries, using the 2018 PISA dataset. The potential of ML techniques to analyze large-scale data and identify student scores is still underutilized, in particular with regards to gender differences. With a focus on differences between girls’ and boys’ predictors for reading achievement, this project has aimed to uncover underlying factors that may help explain the reading achievement gap. The project has served to answer the question: What predicts boys’ reading achievement and how does this differ from predictors of girls’ reading achievement? </div>
+<div style="text-align: justify"> The OECD's Programme for International Student Assessment (PISA) has consistently found that girls outperform boys in reading, among other domains, and that this gender gap is large, worldwide, and persistent throughout primary and secondary schooling [@stoet2018gender]. Recent literature highlights how girls’ academic strength relative to their male peers may impact their confidence and interests across subjects, thus explaining differences in girls’ career aspira- tions, such as a lower likelihood of joining STEM fields. While previous research has observed a selection of predictors for reading scores in single countries, the project “PISA Revisited“ examines predictors for reading scores of 15-year old boys and girls across all PISA countries, using the 2018 PISA dataset. The potential of ML techniques to analyze large-scale data and identify student scores is still underutilized, in particular with regards to gender differences. With a focus on differences between girls’ and boys’ predictors for reading achievement, this project has aimed to uncover underlying factors that may help explain the reading achievement gap. The project has served to answer the question: What predicts boys’ reading achievement and how does this differ from predictors of girls’ reading achievement? </div>
 
 
 ## Data
 
 <div style="text-align: justify"> 
-The underlying data for this ML project was taken from the most recent 2018 iteration of the PISA, considered one the most comprehensive standardized assessments in education, and yardstick for national education strategies and education policy. The administered student questionnaire assesses the academic performance, attitudes and learning environments of 15-year olds in 79 countries around the world.  Most countries assessed between 4,000 and 8,000 students, which resulted in a pandas data frame with a total of 612,004 observations of individual students across 1,120 columns.
-In order to work with the data, a random sample of 100,000 observations was taken and feature selection was conducted in line with a literature review of previous research on literacy using PISA data. In order to retain as much of the original data, independent variables were imputed using the MissForest imputer and while categorical values were One Hot Encoded, normalization was applied on each ordinal and continuous feature, transforming it to a value between 0 and 1 with the sklearn’s MinMaxScaler.  In the MissForest model, missing values were filled in using median/mode imputation and in subsequent iterations, the missing values are predicted using the others as training rows, which are fed into a Random Forest model.
+The underlying data for this ML project was taken from the most recent 2018 iteration of the PISA, considered one the most comprehensive standardized assessments in education, and yardstick for national education strategies and education policy. The administered student questionnaire assesses the academic performance, attitudes and learning environments of 15-year olds in 79 countries around the world.  Most countries assessed between 4,000 and 8,000 students, which resulted in a pandas data frame with a total of 612,004 observations of individual students across 1,120 columns. In order to work with the data, a random sample of 100,000 observations was taken and feature selection was conducted in line with a literature review of previous research on literacy using PISA data. 
+
+In order to retain as much of the original data, independent variables were imputed using the MissForest imputer and while categorical values were One Hot Encoded, normalization was applied on each ordinal and continuous feature, transforming it to a value between 0 and 1 with the sklearn’s MinMaxScaler.  In the MissForest model, missing values were filled in using median/mode imputation and in subsequent iterations, the missing values are predicted using the others as training rows, which are fed into a Random Forest model.
+
 The final result yielded a dataset of 205 features with high internal validity, which were used as independent variables to predict the continuous variable reading score, with a mean of 500 points with approximately 100 points of standard deviation.  Due to a large number of observations, the project employed a reduced testing-training set split from 80% to 70% training data, 10% testing data and two validation sets with 10% of the data each. </div>
 
 
-```{r table1, eval = TRUE, echo = FALSE, out.width = '100%', fig.cap = "Overview of variables"}
+```{r fig1, eval = TRUE, echo = FALSE, out.width = "100%", fig.cap = "Overview of variables"}
 knitr::include_graphics("figures/Table_variables_overview.png")
 ```
 
@@ -52,7 +54,7 @@ knitr::include_graphics("figures/Table_variables_overview.png")
 <div style="text-align: justify"> After preparing and splitting the data a few models were trained.  A linear regression model served as the baseline for the further analysis. This model along with ridge penalty and ridge with polynomial data regressions were firstly trained on the training data. Next, we designed and compared the RMSE results of the Random Forest and Extra Trees. In the second stage all models were fine-tuned on the validation sets and then, the best performing models were tested on the bigger dataset.  After comparing the results, in order to combine the strengths of different model approaches, the best performing linear regression model was evaluated with the best performing tree-based model in an ensemble. This led us to select the best performing model and select the most important predictors for boys and girls. Figure 2 presents all the steps we have done during the project. </div>
 
 
-```{r fig2, eval = TRUE, echo = FALSE, out.width = '100%', fig.cap = "Model architecture"}
+```{r fig2, eval = TRUE, echo = FALSE, out.width = '50%', fig.cap = "Proposed method"}
 knitr::include_graphics("figures/methodology_steps.png")
 ```
 
@@ -60,40 +62,26 @@ knitr::include_graphics("figures/methodology_steps.png")
 
 <div style="text-align: justify"> All models were evaluated on RMSE. The RMSE of our baseline model was around 68.52. The only improvement of that score was provided by the ridge regression. Initially, after Repeated 10-Fold cross validation, the RMSE was around 69.15. In the second step, the model was fine-tuned using SciKitLearn’s GridSearchCV. Final best hyperparameters selected by the model were alpha=5, fit\_intercept=True and slover ‘sag’. The RMSE score slightly improved to around 68.00. 
 
-
-```{python bertcnn model parameters, echo = TRUE, eval = FALSE}
-OUTPUT_DIM = len(LABEL.vocab)
-DROPOUT = 0.5
-N_FILTERS = 100
-FILTER_SIZES = [2,3]
-
-model = BERTCNN(bert,
-                OUTPUT_DIM,
-                DROPOUT,
-                N_FILTERS,
-                FILTER_SIZES)
-```
-
 Neither ridge regression with polynomial transformed data nor any of the tree methods produced improved scores. After fine-tuning, RMSE score of ridge regression with polynomial data was around 80.67. Also our best performing Random Forest scored a few points above (72.62) the baseline. Adding Extra Trees did improve the score in comparison to the Random Forest (70.29) but still performed worse than the linear regression model. 
 
 Thus, to an ensemble we chose the ridge regression model (RMSE 68.00) and the best ExtraTree model (RMSE 70.29). The result of the ensemble was better in comparison to our baseline - the RMSE=66.40. 
 
-```{r fig3, eval = TRUE, echo = FALSE, out.width = '100%', fig.cap = "Selection of the final model"}
+```{r fig3, eval = TRUE, echo = FALSE, out.width = '50%', fig.cap = "Model Selection Process"}
 knitr::include_graphics("figures/model_selection_process.png")
 ```
 
-Figure 3 shows the model choice process. The decision is based on a comparison of the RMSE of all models. Although the ensemble performed best, it could not be chosen for the subsequent evaluation of the coefficients due to a lack of interpretation methods (see dotted arrow in the diagram). Thus, on this model we selected the most important features for boys and girls. </div>
+Figure 3 shows the model selection process. The decision is based on a comparison of the RMSE of all models. Although the ensemble performed best, it could not be chosen for the subsequent evaluation of the coefficients due to a lack of interpretation methods (see dotted arrow in the diagram). Thus, on this model we selected the most important features for boys and girls. </div>
 
 ## Analysis 
 <div style="text-align: justify"> Figure 4 provides an overview of the 15 most important predictors for girls and boys, including their feature importance. Depending on the direction of its sign, this relative score highlights the features that are most relevant to predicting the reading score, either positively or negatively. Comparing the most important predictors of reading scores of girls vis-a-vis boys validates our research question insofar as it shows that predictors differ between genders, both in magnitude, but also in order of importance. On one hand, certain teaching strategies, such as short summaries of previous lessons (questionnaire item ST102Q03TA) have a much larger coefficient for boys than for girls (30.7 vs. 20.6), while other factors, such as skipping school, have a strong correlation with reading performance for boys (-21.9), but are not included in the most important predictors for girls at all. Some predictors, on the other hand, rank similarly in order of magnitude, such as perseverance (“If I am not good at something, I would rather keep struggling to master it than move on to something I may be good at.” (ST182Q06HA)) or the use of chatting applications on smartphones. 
 
-```{r fig4, eval = TRUE, echo = FALSE, out.width = '100%', fig.cap = "Selection of the final model"}
+```{r fig4, eval = TRUE, echo = FALSE, out.width = '50%', fig.cap = "Selection of the final model"}
 knitr::include_graphics("figures/feature_importance_venn.png")
 ```
 
 Moreover, the scatterplot in Fig. 5  demonstrates the model’s predictions for reading scores of individual students. While perfect alignment with the red line represents the hypothetical perfect prediction of actual scores, deviations from the red line represent a larger prediction error. Judging from the shape of the scatterplot, the model predicts values quite uniformly across for different reading scores, however, there is a slight tendency to underestimate predictions for low-performing students and a tendency of the model to overestimate the scores of high-performing students. </div>
 
-```{r fig5, eval = TRUE, echo = FALSE, out.width = '100%', fig.cap = "Predictions for reading scores of individual students"}
+```{r fig5, eval = TRUE, echo = FALSE, out.width = '50%', fig.cap = "Predictions for reading scores of individual students"}
 knitr::include_graphics("figures/scatter_plot.png")
 ```
 
@@ -108,12 +96,6 @@ This project demonstrated an attempt at combining sophisticated machine learning
 
 **See below for an example of how to cite related work in Markdown.**
 
-Bidirectional Encoder Representations from Transformers (BERT) have proven successful in prior attempts to classify phrases and short texts [@devlin2018bert].
-
-**Footnotes and Sidenotes**
-
-You can use footnotes ^[This is a footnote. You can view this by hovering over the footnote in text.] or sidenotes to elaborate on a concept throughout the paper. 
-
-<aside>
-This is a side note. 
-</aside>
+[@stoet2018gender]
+[@dong2019exploration]
+[@brow2019significant]
