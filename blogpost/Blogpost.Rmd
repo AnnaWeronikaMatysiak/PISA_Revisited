@@ -1,14 +1,12 @@
 ---
 title: "PISA REVISITED"
 description: |
- This project uses a machine learning framework to identify the strongest predictors of reading scores, from the complete 2018 PISA dataset, for boys and girls
+ This project uses a machine learning framework to identify the strongest predictors of reading scores for boys and girls from the complete 2018 PISA dataset.
 authors: 
   - name: Johana Mehler, Anna Weronika Matysiak, Max Eckert
 
     url: https://allisonkoh.github.io
 date: "`r Sys.Date()`" 
-categories: 
-  - Machine Leaning
 creative_commons: CC BY
 repository_url: https://github.com/AnnaWeronikaMatysiak/PISA_Revisited
 output: 
@@ -55,7 +53,7 @@ After preparing and splitting the data, a selection of models was trained (step 
 
 ## Results and Analysis
 
-<div style="text-align: justify"> All models were evaluated using Root Mean Square Error (RMSE) as the metric. The baseline model scored a RMSE  of 68.52. The only improvement of that score was achieved by the ridge regression. Initially, after 10-fold cross validation, the RMSE was 69.15. In the second step, the model was fine-tuned using SciKitLearn’s GridSearchCV. The final hyperparameters found through grid search were alpha=5, fit_intercept=True and slover=‘sag’. Through these changes, the RMSE score slightly improved to 68.00.
+<div style="text-align: justify"> All models were evaluated using Root Mean Square Error (RMSE) as the metric. Figure 3 visualizes the model selection process. The baseline model scored an RMSE  of 68.52. The only improvement of that score was achieved by the ridge regression. Initially, after 10-fold cross validation, the RMSE was 69.15. In the second step, the model was fine-tuned using SciKitLearn’s GridSearchCV. The final hyperparameters found through grid search were alpha=5, fit_intercept=True and slover=‘sag’. Through these changes, the RMSE score slightly improved to 68.00.
 
 
 ```{r fig3, eval = TRUE, echo = FALSE, out.width = '50%', fig.cap = "Model Selection Process"}
@@ -64,14 +62,13 @@ knitr::include_graphics("figures/model_selection_process.png")
 
 Neither ridge regression with polynomial transformed data nor any of the tree methods applied yielded improved scores. After fine-tuning, the RMSE score of the ridge regression with polynomial data was around 80.67. Also, the best performing Random Forest scored a few points above the baseline (72.62). The Extra Trees model (70.29) did improve the score in comparison to Random Forest but still performed worse than the linear regression model. Thus, to build an ensemble we chose the tuned ridge regression model (RMSE 68.00) and the best ExtraTrees model (RMSE 70.29). The score of the ensemble (RMSE 66.40) overperformed the baseline. 
 
-Figure 3 visualizes the model selection process. The model choice was based on a comparison of the RMSE of all models and considerations of interpretability. Although the ensemble performed best, it could not be chosen for the subsequent feature analysis due to a lack of appropriate interpretation methods regarding feature importance. Thus, the fine-tuned ridge regression was chosen to examine the most important features for boys and girls.  
-
-Figure 4 provides an overview of the 10 most important predictors for girls and boys, including the coefficients that derived from the gender specific models (yellow numbers represent the female, green numbers the male subset). Depending on the direction of its sign, this relative score highlights the features that are most relevant for predicting the reading score, either positively or negatively. A comparison of the most important predictors for both groups shows that they vary in magnitude, but also in order of their importance. This validates our research question. On the one hand, certain teaching strategies, such as short summaries of previous lessons have a much larger coefficient for boys than for girls (30.7 vs. 20.6, not included in the top ten predictors for girls), while other factors, such as the expectation of a Bachelor’s degree, have a strong correlation with reading performance for boys (24.62), but are not included in the most important predictors for girls at all. Some predictors, on the other hand, rank similarly in order of magnitude, such as perseverance (“If I am not good at something, I would rather keep struggling to master it than move on to something I may be good at”) or the impact of grade repetition. 
-
+The model choice was based on a comparison of the RMSE of all models and considerations of interpretability. Although the ensemble performed best, it could not be chosen for the subsequent feature analysis due to a lack of appropriate interpretation methods regarding feature importance. Thus, the fine-tuned ridge regression was chosen to examine the most important features for boys and girls. 
 
 ```{r fig4, eval = TRUE, echo = FALSE, out.width = '50%', fig.cap = "Selection of the final model"}
 knitr::include_graphics("figures/feature_importance_venn.png")
 ```
+
+Figure 4 provides an overview of the 10 most important predictors for girls and boys, including the coefficients that derived from the gender specific models (yellow numbers represent the female, green numbers the male subset). Depending on the direction of its sign, this relative score highlights the features that are most relevant for predicting the reading score, either positively or negatively. A comparison of the most important predictors for both groups shows that they vary in magnitude, but also in order of their importance. This validates our research question. On the one hand, certain teaching strategies, such as short summaries of previous lessons have a much larger coefficient for boys than for girls (30.7 vs. 20.6, not included in the top ten predictors for girls), while other factors, such as the expectation of a Bachelor’s degree, have a strong correlation with reading performance for boys (24.62), but are not included in the most important predictors for girls at all. Some predictors, on the other hand, rank similarly in order of magnitude, such as perseverance (“If I am not good at something, I would rather keep struggling to master it than move on to something I may be good at”) or the impact of grade repetition. 
 
 The scatterplot in Fig. 5 demonstrates the model’s predictions for reading scores of individual students. While perfect alignment with the red line represents the hypothetical perfect prediction of actual scores, deviations from the red line represent a larger prediction error. Judging from the shape of the scatterplot, the model predicts values quite uniformly across for different reading scores, however, there is a slight tendency to underestimate predictions for low-performing students and a tendency of the model to overestimate the scores of high-performing students. </div>
 
